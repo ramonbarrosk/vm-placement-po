@@ -279,38 +279,42 @@ public class AllocationSolution {
             return Double.MAX_VALUE;
         }
         
-        int index = solutions.indexOf(this);
-        if (index == -1) {
-            return 0.0;
-        }
+        // Work with copies to avoid modifying the original list
+        List<AllocationSolution> solutionsByCost = new ArrayList<>(solutions);
+        List<AllocationSolution> solutionsByReliability = new ArrayList<>(solutions);
         
         double distance = 0.0;
         
         // Ordena por custo
-        solutions.sort(Comparator.comparingDouble(AllocationSolution::getTotalCost));
-        if (index == 0 || index == solutions.size() - 1) {
+        solutionsByCost.sort(Comparator.comparingDouble(AllocationSolution::getTotalCost));
+        int indexByCost = solutionsByCost.indexOf(this);
+        if (indexByCost == -1) {
+            return 0.0;
+        }
+        
+        if (indexByCost == 0 || indexByCost == solutionsByCost.size() - 1) {
             return Double.MAX_VALUE; // Soluções nas extremidades
         }
         
-        double costRange = solutions.get(solutions.size() - 1).getTotalCost() - 
-                          solutions.get(0).getTotalCost();
+        double costRange = solutionsByCost.get(solutionsByCost.size() - 1).getTotalCost() - 
+                          solutionsByCost.get(0).getTotalCost();
         if (costRange > 0) {
-            distance += (solutions.get(index + 1).getTotalCost() - 
-                        solutions.get(index - 1).getTotalCost()) / costRange;
+            distance += (solutionsByCost.get(indexByCost + 1).getTotalCost() - 
+                        solutionsByCost.get(indexByCost - 1).getTotalCost()) / costRange;
         }
         
         // Ordena por confiabilidade
-        solutions.sort(Comparator.comparingDouble(AllocationSolution::getTotalReliability));
-        index = solutions.indexOf(this);
-        if (index == 0 || index == solutions.size() - 1) {
+        solutionsByReliability.sort(Comparator.comparingDouble(AllocationSolution::getTotalReliability));
+        int indexByReliability = solutionsByReliability.indexOf(this);
+        if (indexByReliability == 0 || indexByReliability == solutionsByReliability.size() - 1) {
             return Double.MAX_VALUE;
         }
         
-        double reliabilityRange = solutions.get(solutions.size() - 1).getTotalReliability() - 
-                                 solutions.get(0).getTotalReliability();
+        double reliabilityRange = solutionsByReliability.get(solutionsByReliability.size() - 1).getTotalReliability() - 
+                                 solutionsByReliability.get(0).getTotalReliability();
         if (reliabilityRange > 0) {
-            distance += (solutions.get(index + 1).getTotalReliability() - 
-                        solutions.get(index - 1).getTotalReliability()) / reliabilityRange;
+            distance += (solutionsByReliability.get(indexByReliability + 1).getTotalReliability() - 
+                        solutionsByReliability.get(indexByReliability - 1).getTotalReliability()) / reliabilityRange;
         }
         
         return distance;

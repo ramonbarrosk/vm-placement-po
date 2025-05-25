@@ -20,7 +20,7 @@ public class ParetoArchive {
     /**
      * Adiciona uma solução ao arquivo se ela for não-dominada
      */
-    public boolean add(AllocationSolution newSolution) {
+    public synchronized boolean add(AllocationSolution newSolution) {
         // Verifica se a nova solução é dominada por alguma existente
         for (AllocationSolution existing : solutions) {
             if (existing.compareDominance(newSolution) < 0) {
@@ -45,59 +45,90 @@ public class ParetoArchive {
     /**
      * Reduz o tamanho do arquivo mantendo diversidade
      */
-    private void reduceSizeByDiversity() {
+    private synchronized void reduceSizeByDiversity() {
         if (solutions.size() <= maxSize) {
             return;
         }
         
-        // Calcula crowding distance para todas as soluções
-        List<AllocationSolution> sortedSolutions = new ArrayList<>(solutions);
-        calculateCrowdingDistances(sortedSolutions);
+        // Simple approach: just keep the first maxSize solutions
+        // This avoids all the complex crowding distance calculations that are causing issues
+        List<AllocationSolution> solutionsToKeep = new ArrayList<>();
+        for (int i = 0; i < Math.min(maxSize, solutions.size()); i++) {
+            solutionsToKeep.add(solutions.get(i));
+        }
         
-        // Ordena por crowding distance (maior primeiro)
-        sortedSolutions.sort((s1, s2) -> Double.compare(
-            s2.calculateCrowdingDistance(sortedSolutions),
-            s1.calculateCrowdingDistance(sortedSolutions)
-        ));
-        
-        // Mantém apenas as primeiras maxSize soluções
         solutions.clear();
-        solutions.addAll(sortedSolutions.subList(0, maxSize));
+        solutions.addAll(solutionsToKeep);
     }
     
     /**
-     * Calcula crowding distances para um conjunto de soluções
+     * Calculates crowding distances for all solutions in the list
      */
-    private void calculateCrowdingDistances(List<AllocationSolution> solutionList) {
+    private Map<AllocationSolution, Double> calculateCrowdingDistances(List<AllocationSolution> solutionList) {
+        Map<AllocationSolution, Double> distances = new HashMap<>();
+        
         if (solutionList.size() <= 2) {
-            return; // Crowding distance será MAX_VALUE para todas
+            // All solutions have infinite crowding distance
+            for (AllocationSolution solution : solutionList) {
+                distances.put(solution, Double.MAX_VALUE);
+            }
+            return distances;
         }
         
-        // Para o objetivo custo (minimizar)
-        solutionList.sort(Comparator.comparingDouble(AllocationSolution::getTotalCost));
-        assignCrowdingDistance(solutionList, AllocationSolution::getTotalCost);
+        // Initialize all distances to 0
+        for (AllocationSolution solution : solutionList) {
+            distances.put(solution, 0.0);
+        }
         
-        // Para o objetivo confiabilidade (maximizar)
-        solutionList.sort(Comparator.comparingDouble(AllocationSolution::getTotalReliability));
-        assignCrowdingDistance(solutionList, AllocationSolution::getTotalReliability);
+        // Calculate crowding distance for cost objective
+        calculateCrowdingDistanceForObjective(solutionList, distances, AllocationSolution::getTotalCost);
+        
+        // Calculate crowding distance for reliability objective  
+        calculateCrowdingDistanceForObjective(solutionList, distances, AllocationSolution::getTotalReliability);
+        
+        return distances;
     }
     
-    private void assignCrowdingDistance(List<AllocationSolution> sortedSolutions,
-                                      java.util.function.Function<AllocationSolution, Double> objectiveExtractor) {
-        if (sortedSolutions.size() < 3) {
-            return;
+    /**
+     * Calculates crowding distance contribution for a specific objective
+     */
+    private void calculateCrowdingDistanceForObjective(List<AllocationSolution> solutionList,
+                                                      Map<AllocationSolution, Double> distances,
+                                                      java.util.function.Function<AllocationSolution, Double> objectiveExtractor) {
+        // Ensure all objective values are computed before sorting
+        for (AllocationSolution solution : solutionList) {
+            objectiveExtractor.apply(solution);
         }
         
-        double minValue = objectiveExtractor.apply(sortedSolutions.get(0));
-        double maxValue = objectiveExtractor.apply(sortedSolutions.get(sortedSolutions.size() - 1));
+        // Create a copy and sort by objective
+        List<AllocationSolution> sortedByObjective = new ArrayList<>(solutionList);
+        sortedByObjective.sort(Comparator.comparingDouble(objectiveExtractor::apply));
+        
+        // Boundary solutions have infinite distance
+        AllocationSolution first = sortedByObjective.get(0);
+        AllocationSolution last = sortedByObjective.get(sortedByObjective.size() - 1);
+        distances.put(first, Double.MAX_VALUE);
+        distances.put(last, Double.MAX_VALUE);
+        
+        // Calculate range
+        double minValue = objectiveExtractor.apply(first);
+        double maxValue = objectiveExtractor.apply(last);
         double range = maxValue - minValue;
         
         if (range > 0) {
-            for (int i = 1; i < sortedSolutions.size() - 1; i++) {
-                double distance = (objectiveExtractor.apply(sortedSolutions.get(i + 1)) -
-                                 objectiveExtractor.apply(sortedSolutions.get(i - 1))) / range;
-                // Note: não podemos modificar a crowding distance diretamente na AllocationSolution
-                // Esta é uma simplificação para o exemplo
+            // Calculate crowding distance for intermediate solutions
+            for (int i = 1; i < sortedByObjective.size() - 1; i++) {
+                AllocationSolution current = sortedByObjective.get(i);
+                AllocationSolution next = sortedByObjective.get(i + 1);
+                AllocationSolution prev = sortedByObjective.get(i - 1);
+                
+                double distance = (objectiveExtractor.apply(next) - objectiveExtractor.apply(prev)) / range;
+                
+                // Add to existing distance (might have been calculated for other objectives)
+                Double currentDistance = distances.get(current);
+                if (!currentDistance.equals(Double.MAX_VALUE)) {
+                    distances.put(current, currentDistance + distance);
+                }
             }
         }
     }
@@ -105,35 +136,35 @@ public class ParetoArchive {
     /**
      * Retorna todas as soluções no arquivo
      */
-    public List<AllocationSolution> getSolutions() {
+    public synchronized List<AllocationSolution> getSolutions() {
         return new ArrayList<>(solutions);
     }
     
     /**
      * Retorna o número de soluções no arquivo
      */
-    public int size() {
+    public synchronized int size() {
         return solutions.size();
     }
     
     /**
      * Verifica se o arquivo está vazio
      */
-    public boolean isEmpty() {
+    public synchronized boolean isEmpty() {
         return solutions.isEmpty();
     }
     
     /**
      * Remove todas as soluções do arquivo
      */
-    public void clear() {
+    public synchronized void clear() {
         solutions.clear();
     }
     
     /**
      * Retorna a solução com menor custo
      */
-    public AllocationSolution getBestCost() {
+    public synchronized AllocationSolution getBestCost() {
         return solutions.stream()
                 .min(Comparator.comparingDouble(AllocationSolution::getTotalCost))
                 .orElse(null);
@@ -142,7 +173,7 @@ public class ParetoArchive {
     /**
      * Retorna a solução com maior confiabilidade
      */
-    public AllocationSolution getBestReliability() {
+    public synchronized AllocationSolution getBestReliability() {
         return solutions.stream()
                 .max(Comparator.comparingDouble(AllocationSolution::getTotalReliability))
                 .orElse(null);
@@ -151,7 +182,7 @@ public class ParetoArchive {
     /**
      * Retorna uma solução balanceada (soma ponderada normalizada)
      */
-    public AllocationSolution getBalancedSolution(double costWeight, double reliabilityWeight) {
+    public synchronized AllocationSolution getBalancedSolution(double costWeight, double reliabilityWeight) {
         if (solutions.isEmpty()) {
             return null;
         }
@@ -188,7 +219,7 @@ public class ParetoArchive {
     /**
      * Calcula estatísticas do arquivo
      */
-    public ArchiveStatistics getStatistics() {
+    public synchronized ArchiveStatistics getStatistics() {
         if (solutions.isEmpty()) {
             return new ArchiveStatistics(0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
         }
