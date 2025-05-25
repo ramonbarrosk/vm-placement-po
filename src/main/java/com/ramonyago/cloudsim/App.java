@@ -126,13 +126,15 @@ public class App {
             AllocationSolution bestReliability = result.getBestReliabilitySolution();
             
             if (bestCost != null) {
-                logger.info("  Best cost: {:.2f} (reliability: {:.3f})", 
-                          bestCost.getTotalCost(), bestCost.getTotalReliability());
+                logger.info("  Best cost: {} (reliability: {})", 
+                          String.format("%.2f", bestCost.getTotalCost()), 
+                          String.format("%.3f", bestCost.getTotalReliability()));
             }
             
             if (bestReliability != null) {
-                logger.info("  Best reliability: {:.3f} (cost: {:.2f})", 
-                          bestReliability.getTotalReliability(), bestReliability.getTotalCost());
+                logger.info("  Best reliability: {} (cost: {})", 
+                          String.format("%.3f", bestReliability.getTotalReliability()), 
+                          String.format("%.2f", bestReliability.getTotalCost()));
             }
         }
     }
@@ -155,27 +157,27 @@ public class App {
         
         if (bestCost != null) {
             logger.info("\nBest Cost Solution:");
-            logger.info("  Cost: {:.2f}", bestCost.getTotalCost());
-            logger.info("  Reliability: {:.3f}", bestCost.getTotalReliability());
-            logger.info("  Energy: {:.2f}", bestCost.getEnergyConsumption());
+            logger.info("  Cost: {}", String.format("%.2f", bestCost.getTotalCost()));
+            logger.info("  Reliability: {}", String.format("%.3f", bestCost.getTotalReliability()));
+            logger.info("  Energy: {}", String.format("%.2f", bestCost.getEnergyConsumption()));
             logger.info("  Feasible: {}", bestCost.isFeasible());
             logger.info("  Active hosts: {}", bestCost.getActiveHosts().size());
         }
         
         if (bestReliability != null) {
             logger.info("\nBest Reliability Solution:");
-            logger.info("  Reliability: {:.3f}", bestReliability.getTotalReliability());
-            logger.info("  Cost: {:.2f}", bestReliability.getTotalCost());
-            logger.info("  Energy: {:.2f}", bestReliability.getEnergyConsumption());
+            logger.info("  Reliability: {}", String.format("%.3f", bestReliability.getTotalReliability()));
+            logger.info("  Cost: {}", String.format("%.2f", bestReliability.getTotalCost()));
+            logger.info("  Energy: {}", String.format("%.2f", bestReliability.getEnergyConsumption()));
             logger.info("  Feasible: {}", bestReliability.isFeasible());
             logger.info("  Active hosts: {}", bestReliability.getActiveHosts().size());
         }
         
         if (balanced != null) {
             logger.info("\nBalanced Solution:");
-            logger.info("  Cost: {:.2f}", balanced.getTotalCost());
-            logger.info("  Reliability: {:.3f}", balanced.getTotalReliability());
-            logger.info("  Energy: {:.2f}", balanced.getEnergyConsumption());
+            logger.info("  Cost: {}", String.format("%.2f", balanced.getTotalCost()));
+            logger.info("  Reliability: {}", String.format("%.3f", balanced.getTotalReliability()));
+            logger.info("  Energy: {}", String.format("%.2f", balanced.getEnergyConsumption()));
             logger.info("  Feasible: {}", balanced.isFeasible());
             logger.info("  Active hosts: {}", balanced.getActiveHosts().size());
         }
@@ -199,12 +201,16 @@ public class App {
         logger.info("-".repeat(40));
         
         solution.getActiveHosts().forEach(host -> {
-            logger.info("Host {} (cost: {:.2f}, fail_prob: {:.3f}):", 
-                      host.getId(), host.getActivationCost(), host.getFailureProbability());
+            logger.info("Host {} (cost: {}, fail_prob: {}):", 
+                      host.getId(), 
+                      String.format("%.2f", host.getActivationCost()), 
+                      String.format("%.3f", host.getFailureProbability()));
             
             solution.getVmsOnHost(host).forEach(vm -> {
-                logger.info("  VM {} (reliability_req: {:.3f}, priority: {:.1f})", 
-                          vm.getId(), vm.getMinReliability(), vm.getPriority());
+                logger.info("  VM {} (reliability_req: {}, priority: {})", 
+                          vm.getId(), 
+                          String.format("%.3f", vm.getMinReliability()), 
+                          String.format("%.1f", vm.getPriority()));
             });
         });
         
@@ -218,7 +224,8 @@ public class App {
                     logger.info("\nUnallocated VMs:");
                     hasUnallocated = true;
                 }
-                logger.info("  VM {} (reliability_req: {:.3f})", vm.getId(), vm.getMinReliability());
+                logger.info("  VM {} (reliability_req: {})", vm.getId(), 
+                          String.format("%.3f", vm.getMinReliability()));
             }
         }
         

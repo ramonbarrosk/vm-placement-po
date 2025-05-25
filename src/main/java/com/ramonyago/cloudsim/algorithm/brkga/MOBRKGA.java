@@ -352,8 +352,9 @@ public class MOBRKGA {
                 .mapToDouble(ind -> ind.getSolution().getTotalReliability())
                 .average().orElse(0.0);
         
-        logger.info("Generation {}: Archive size = {}, Avg cost = {:.2f}, Avg reliability = {:.3f}",
-                   currentGeneration, archive.size(), avgCost, avgReliability);
+        logger.info("Generation {}: Archive size = {}, Avg cost = {}, Avg reliability = {}",
+                   currentGeneration, archive.size(), String.format("%.2f", avgCost), 
+                   String.format("%.3f", avgReliability));
     }
     
     // Getters para estatísticas

@@ -1,6 +1,8 @@
 package com.ramonyago.cloudsim;
 
 import com.ramonyago.cloudsim.algorithm.brkga.*;
+import com.ramonyago.cloudsim.algorithm.TabuSearch;
+import com.ramonyago.cloudsim.algorithm.MOILP;
 import com.ramonyago.cloudsim.io.InstanceReader;
 import com.ramonyago.cloudsim.model.AllocationSolution;
 import com.ramonyago.cloudsim.model.ProblemInstance;
@@ -23,6 +25,8 @@ public class VMAllocationOptimizer {
     
     // Componentes dos algoritmos
     private MOBRKGA brkga;
+    private TabuSearch tabuSearch;
+    private MOILP moilp;
     private ParetoArchive finalArchive;
     
     // Estatísticas de execução
@@ -50,11 +54,11 @@ public class VMAllocationOptimizer {
             logger.info("=== Phase 1: Multi-objective BRKGA ===");
             ParetoArchive brkgaArchive = runBRKGA();
             
-            // Fase 2: Busca Tabu (implementação futura)
+            // Fase 2: Busca Tabu
             logger.info("=== Phase 2: Multi-objective Tabu Search ===");
             ParetoArchive tabuArchive = runTabuSearch(brkgaArchive);
             
-            // Fase 3: MOILP (implementação futura)
+            // Fase 3: MOILP
             logger.info("=== Phase 3: Multi-objective Integer Linear Programming ===");
             ParetoArchive moilpArchive = runMOILP(tabuArchive);
             
@@ -99,21 +103,45 @@ public class VMAllocationOptimizer {
     }
     
     /**
-     * Executa busca tabu multi-objetivo (placeholder para implementação futura)
+     * Executa busca tabu multi-objetivo
      */
     private ParetoArchive runTabuSearch(ParetoArchive initialSolutions) {
-        logger.info("Tabu Search not implemented yet. Returning BRKGA solutions.");
-        // TODO: Implementar MultiObjectiveTabuSearch
-        return initialSolutions;
+        TabuSearch.TabuParameters tabuParams = new TabuSearch.TabuParameters(
+                parameters.getTabuMaxIterations(),
+                parameters.getTabuListSize(),
+                50, // diversification frequency
+                parameters.getArchiveSize(),
+                0.4, // cost weight
+                0.6, // reliability weight
+                parameters.getRandomSeed()
+        );
+        
+        tabuSearch = new TabuSearch(instance, tabuParams);
+        ParetoArchive tabuArchive = tabuSearch.run(initialSolutions);
+        
+        logger.info("Tabu Search completed. Archive size: {}, Improvements: {}", 
+                   tabuArchive.size(), tabuSearch.getImprovementCount());
+        return tabuArchive;
     }
     
     /**
-     * Executa MOILP (placeholder para implementação futura)
+     * Executa MOILP
      */
     private ParetoArchive runMOILP(ParetoArchive guidingSolutions) {
-        logger.info("MOILP not implemented yet. Returning previous solutions.");
-        // TODO: Implementar MOILP
-        return guidingSolutions;
+        MOILP.MOILPParameters moilpParams = new MOILP.MOILPParameters(
+                parameters.getMoilpTimeLimit(),
+                100, // max variables for exact solution
+                10,  // number of epsilon steps
+                parameters.getArchiveSize(),
+                parameters.getSolverType()
+        );
+        
+        moilp = new MOILP(instance, moilpParams);
+        ParetoArchive moilpArchive = moilp.solve(guidingSolutions);
+        
+        logger.info("MOILP completed. Archive size: {}, Solutions generated: {}, Optimal: {}", 
+                   moilpArchive.size(), moilp.getSolutionsGenerated(), moilp.isOptimalSolutions());
+        return moilpArchive;
     }
     
     /**
@@ -145,6 +173,16 @@ public class VMAllocationOptimizer {
             reportBuilder.brkgaExecutionTime(brkga.getExecutionTime())
                         .brkgaGenerations(brkga.getCurrentGeneration())
                         .brkgaArchiveSizeHistory(brkga.getArchiveSizeHistory());
+        }
+        
+        if (tabuSearch != null) {
+            reportBuilder.tabuExecutionTime(tabuSearch.getExecutionTime())
+                        .tabuIterations(tabuSearch.getIterations());
+        }
+        
+        if (moilp != null) {
+            reportBuilder.moilpExecutionTime(moilp.getExecutionTime())
+                        .moilpOptimal(moilp.isOptimalSolutions());
         }
         
         return reportBuilder.build();

@@ -4,6 +4,8 @@ C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\ExecutionReport
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\model\ProblemInstance.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\model\VM.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\algorithm\brkga\BRKGADecoder.java
+C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\algorithm\MOILP.java
+C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\algorithm\TabuSearch.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\io\InstanceReader.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\util\ParetoArchive.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\AlocacaoBRKGA.java
