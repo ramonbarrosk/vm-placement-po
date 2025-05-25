@@ -1,0 +1,115 @@
+{
+  "metadata": {
+    "description": "Example instance for VM allocation problem",
+    "difficulty": "medium",
+    "source": "generated",
+    "created": "2024-01-01"
+  },
+  "vms": [
+    {
+      "id": 1,
+      "minReliability": 0.95,
+      "priority": 1.0,
+      "resourceDemands": {
+        "cpu": 2.0,
+        "ram": 4.0,
+        "storage": 20.0,
+        "network": 100.0
+      }
+    },
+    {
+      "id": 2,
+      "minReliability": 0.90,
+      "priority": 1.5,
+      "resourceDemands": {
+        "cpu": 1.0,
+        "ram": 2.0,
+        "storage": 10.0,
+        "network": 50.0
+      }
+    },
+    {
+      "id": 3,
+      "minReliability": 0.98,
+      "priority": 2.0,
+      "resourceDemands": {
+        "cpu": 4.0,
+        "ram": 8.0,
+        "storage": 40.0,
+        "network": 200.0
+      }
+    },
+    {
+      "id": 4,
+      "minReliability": 0.85,
+      "priority": 0.8,
+      "resourceDemands": {
+        "cpu": 1.5,
+        "ram": 3.0,
+        "storage": 15.0,
+        "network": 75.0
+      }
+    },
+    {
+      "id": 5,
+      "minReliability": 0.92,
+      "priority": 1.2,
+      "resourceDemands": {
+        "cpu": 3.0,
+        "ram": 6.0,
+        "storage": 30.0,
+        "network": 150.0
+      }
+    }
+  ],
+  "hosts": [
+    {
+      "id": 1,
+      "activationCost": 100.0,
+      "failureProbability": 0.02,
+      "energyConsumption": 150.0,
+      "resourceCapacities": {
+        "cpu": 8.0,
+        "ram": 16.0,
+        "storage": 100.0,
+        "network": 1000.0
+      }
+    },
+    {
+      "id": 2,
+      "activationCost": 80.0,
+      "failureProbability": 0.05,
+      "energyConsumption": 120.0,
+      "resourceCapacities": {
+        "cpu": 4.0,
+        "ram": 8.0,
+        "storage": 50.0,
+        "network": 500.0
+      }
+    },
+    {
+      "id": 3,
+      "activationCost": 120.0,
+      "failureProbability": 0.01,
+      "energyConsumption": 180.0,
+      "resourceCapacities": {
+        "cpu": 12.0,
+        "ram": 24.0,
+        "storage": 200.0,
+        "network": 1500.0
+      }
+    },
+    {
+      "id": 4,
+      "activationCost": 90.0,
+      "failureProbability": 0.03,
+      "energyConsumption": 140.0,
+      "resourceCapacities": {
+        "cpu": 6.0,
+        "ram": 12.0,
+        "storage": 80.0,
+        "network": 800.0
+      }
+    }
+  ]
+} 
