@@ -86,6 +86,7 @@ public class OptimizationParameters {
                 .brkgaMaxGenerations(2000)
                 .tabuMaxIterations(1000)
                 .archiveSize(200)
+                .moilpTimeLimit(3600.0) // 1 hora para execução intensiva
                 .build();
     }
     
@@ -134,7 +135,7 @@ public class OptimizationParameters {
         private boolean tabuUseIntensification = true;
         private boolean tabuUseDiversification = true;
         
-        private double moilpTimeLimit = 300.0; // 5 minutos
+        private double moilpTimeLimit = 1800.0; // 30 minutos - AUMENTADO SIGNIFICATIVAMENTE PARA TESTES
         private boolean useMOILPRefinement = false;
         private String solverType = "GLPK";
         
