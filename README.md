@@ -1,4 +1,4 @@
-# Alocação de VMs com BRKGA, Tabu Search e MOILP
+# Alocação de VMs com BRKGA, Tabu Search
 
 ## Autores
 
@@ -13,7 +13,6 @@ O objetivo do projeto é a implementação de técnicas híbridas para resolver 
 
 - **BRKGA (Biased Random-Key Genetic Algorithm)** multiobjetivo
 - **Busca Tabu** multiobjetivo (planejado)
-- **MOILP (Multi-Objective Integer Linear Programming)** (planejado)
 
 A meta principal é encontrar um conjunto de **soluções Pareto-ótimas** que otimizem simultaneamente:
 - **Minimização do custo** total dos hosts ativos
