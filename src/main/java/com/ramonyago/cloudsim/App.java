@@ -5,232 +5,233 @@ import com.ramonyago.cloudsim.io.InstanceReader;
 import com.ramonyago.cloudsim.model.AllocationSolution;
 import com.ramonyago.cloudsim.model.ProblemInstance;
 import com.ramonyago.cloudsim.model.VM;
+import com.ramonyago.cloudsim.model.Host;
+import com.ramonyago.cloudsim.model.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-/**
- * Aplicação principal para demonstrar o sistema de otimização de alocação de VMs.
- */
+// Main app - quick demo of VM allocation system
 public class App {
-    private static final Logger logger = LoggerFactory.getLogger(App.class);
+    private static final Logger log = LoggerFactory.getLogger(App.class);
     
     public static void main(String[] args) {
-        logger.info("=== VM Allocation Optimization System ===");
-        logger.info("Starting demonstration...");
+        log.info("=== VM Allocation Optimization System ===");
+        log.info("Starting demo...");
         
         try {
-            // Exemplo 1: Execução rápida com instância de exemplo
-            runQuickExample();
+            // quick example with sample data
+            runQuickDemo();
             
-            // Exemplo 2: Execução com arquivo JSON (se existir)
+            // file input if provided
             if (args.length > 0) {
-                runWithInputFile(args[0]);
+                runFromFile(args[0]);
             }
             
-            // Exemplo 3: Comparação de estratégias de decodificação
-            compareDecodingStrategies();
+            // compare different strategies
+            compareStrats();
             
         } catch (Exception e) {
-            logger.error("Error during execution", e);
+            log.error("Error during execution", e);
             System.exit(1);
         }
         
-        logger.info("Demonstration completed successfully!");
+        log.info("Demo completed!");
     }
     
-    /**
-     * Executa um exemplo rápido com instância padrão
-     */
-    private static void runQuickExample() {
-        logger.info("\n" + "=".repeat(60));
-        logger.info("QUICK EXAMPLE - Sample Instance");
-        logger.info("=".repeat(60));
+    // quick demo with default instance
+    private static void runQuickDemo() {
+        log.info("\n" + "=".repeat(60));
+        log.info("QUICK DEMO - Sample Instance");
+        log.info("=".repeat(60));
         
-        // Parâmetros para execução rápida
+        // quick params
         OptimizationParameters params = OptimizationParameters.createQuick();
-        logger.info("Parameters: {}", params);
+        log.info("Params: {}", params);
         
-        // Cria otimizador com instância de exemplo
-        VMAllocationOptimizer optimizer = VMAllocationOptimizer.withSampleInstance(params);
+        // create optimizer with sample data
+        VMAllocationOptimizer opt = VMAllocationOptimizer.withSampleInstance(params);
         
-        // Executa otimização
-        VMAllocationOptimizer.OptimizationResult result = optimizer.optimize();
+        // run optimization
+        VMAllocationOptimizer.OptimizationResult result = opt.optimize();
         
-        // Mostra resultados
-        displayResults(result);
+        // show results
+        showResults(result);
     }
     
-    /**
-     * Executa com arquivo de entrada especificado
-     */
-    private static void runWithInputFile(String filePath) {
-        logger.info("\n" + "=".repeat(60));
-        logger.info("FILE INPUT EXAMPLE - {}", filePath);
-        logger.info("=".repeat(60));
+    // run with input file
+    private static void runFromFile(String filePath) {
+        log.info("\n" + "=".repeat(60));
+        log.info("FILE INPUT - {}", filePath);
+        log.info("=".repeat(60));
         
         try {
-            // Parâmetros padrão
+            // default params
             OptimizationParameters params = OptimizationParameters.createDefault();
             
-            // Cria otimizador a partir do arquivo
-            VMAllocationOptimizer optimizer = VMAllocationOptimizer.fromFile(filePath, params);
+            // create optimizer from file
+            VMAllocationOptimizer opt = VMAllocationOptimizer.fromFile(filePath, params);
             
-            // Executa otimização
-            VMAllocationOptimizer.OptimizationResult result = optimizer.optimize();
+            // run optimization
+            VMAllocationOptimizer.OptimizationResult result = opt.optimize();
             
-            // Mostra resultados
-            displayResults(result);
+            // show results
+            showResults(result);
             
         } catch (IOException e) {
-            logger.error("Failed to read input file: {}", filePath, e);
+            log.error("Failed to read file: {}", filePath, e);
         }
     }
     
-    /**
-     * Compara diferentes estratégias de decodificação
-     */
-    private static void compareDecodingStrategies() {
-        logger.info("\n" + "=".repeat(60));
-        logger.info("STRATEGY COMPARISON");
-        logger.info("=".repeat(60));
+    // compare different decoding strategies
+    private static void compareStrats() {
+        log.info("\n" + "=".repeat(60));
+        log.info("STRATEGY COMPARISON");
+        log.info("=".repeat(60));
         
-        ProblemInstance instance = InstanceReader.createSampleInstance();
+        ProblemInstance inst = InstanceReader.createSampleInstance();
         
-        BRKGADecoder.DecodingStrategy[] strategies = {
+        BRKGADecoder.DecodingStrategy[] strats = {
             BRKGADecoder.DecodingStrategy.GREEDY_COST,
             BRKGADecoder.DecodingStrategy.GREEDY_RELIABILITY,
             BRKGADecoder.DecodingStrategy.BALANCED,
             BRKGADecoder.DecodingStrategy.FIRST_FIT
         };
         
-        for (BRKGADecoder.DecodingStrategy strategy : strategies) {
-            logger.info("\nTesting strategy: {}", strategy);
+        for (BRKGADecoder.DecodingStrategy strat : strats) {
+            log.info("\nTesting strategy: {}", strat);
             
             OptimizationParameters params = new OptimizationParameters.Builder()
                     .brkgaPopulationSize(50)
                     .brkgaMaxGenerations(100)
                     .archiveSize(50)
-                    .decodingStrategy(strategy)
-                    .randomSeed(42) // Seed fixo para comparação justa
+                    .decodingStrategy(strat)
+                    .randomSeed(42) // fixed seed for fair comparison
                     .build();
             
-            VMAllocationOptimizer optimizer = new VMAllocationOptimizer(instance, params);
-            VMAllocationOptimizer.OptimizationResult result = optimizer.optimize();
+            VMAllocationOptimizer opt = new VMAllocationOptimizer(inst, params);
+            VMAllocationOptimizer.OptimizationResult result = opt.optimize();
             
-            logger.info("  Archive size: {}", result.getArchive().size());
-            logger.info("  Execution time: {} ms", result.getReport().getTotalExecutionTime());
+            log.info("  Archive size: {}", result.getArchive().size());
+            log.info("  Exec time: {} ms", result.getReport().getTotalExecutionTime());
             
             AllocationSolution bestCost = result.getBestCostSolution();
-            AllocationSolution bestReliability = result.getBestReliabilitySolution();
+            AllocationSolution bestRel = result.getBestReliabilitySolution();
             
             if (bestCost != null) {
-                logger.info("  Best cost: {} (reliability: {})", 
+                log.info("  Best cost: {} (rel: {})", 
                           String.format("%.2f", bestCost.getTotalCost()), 
-                          String.format("%.3f", bestCost.getTotalReliability()));
+                          String.format("%.3f", bestRel.getTotalReliability()));
             }
             
-            if (bestReliability != null) {
-                logger.info("  Best reliability: {} (cost: {})", 
-                          String.format("%.3f", bestReliability.getTotalReliability()), 
-                          String.format("%.2f", bestReliability.getTotalCost()));
+            if (bestRel != null) {
+                log.info("  Best rel: {} (cost: {})", 
+                          String.format("%.3f", bestRel.getTotalReliability()), 
+                          String.format("%.2f", bestRel.getTotalCost()));
             }
         }
     }
     
-    /**
-     * Exibe os resultados da otimização
-     */
-    private static void displayResults(VMAllocationOptimizer.OptimizationResult result) {
-        logger.info("\nOPTIMIZATION RESULTS:");
-        logger.info("-".repeat(40));
+    // show optimization results
+    private static void showResults(VMAllocationOptimizer.OptimizationResult result) {
+        log.info("\nOPTIMIZATION RESULTS:");
+        log.info("-".repeat(40));
         
-        // Estatísticas gerais
-        logger.info("Archive size: {}", result.getArchive().size());
-        logger.info("Execution time: {} ms", result.getReport().getTotalExecutionTime());
+        // general stats
+        log.info("Archive size: {}", result.getArchive().size());
+        log.info("Exec time: {} ms", result.getReport().getTotalExecutionTime());
         
-        // Melhores soluções
+        // best solutions
         AllocationSolution bestCost = result.getBestCostSolution();
-        AllocationSolution bestReliability = result.getBestReliabilitySolution();
+        AllocationSolution bestRel = result.getBestReliabilitySolution();
         AllocationSolution balanced = result.getBalancedSolution();
         
         if (bestCost != null) {
-            logger.info("\nBest Cost Solution:");
-            logger.info("  Cost: {}", String.format("%.2f", bestCost.getTotalCost()));
-            logger.info("  Reliability: {}", String.format("%.3f", bestCost.getTotalReliability()));
-            logger.info("  Energy: {}", String.format("%.2f", bestCost.getEnergyConsumption()));
-            logger.info("  Feasible: {}", bestCost.isFeasible());
-            logger.info("  Active hosts: {}", bestCost.getActiveHosts().size());
+            log.info("\nBest Cost Solution:");
+            log.info("  Cost: {}", String.format("%.2f", bestCost.getTotalCost()));
+            log.info("  Reliability: {}", String.format("%.3f", bestCost.getTotalReliability()));
+            log.info("  Energy: {}", String.format("%.2f", bestCost.getEnergyConsumption()));
+            log.info("  Feasible: {}", bestCost.isFeasible());
+            log.info("  Active hosts: {}", bestCost.getActiveHosts().size());
         }
         
-        if (bestReliability != null) {
-            logger.info("\nBest Reliability Solution:");
-            logger.info("  Reliability: {}", String.format("%.3f", bestReliability.getTotalReliability()));
-            logger.info("  Cost: {}", String.format("%.2f", bestReliability.getTotalCost()));
-            logger.info("  Energy: {}", String.format("%.2f", bestReliability.getEnergyConsumption()));
-            logger.info("  Feasible: {}", bestReliability.isFeasible());
-            logger.info("  Active hosts: {}", bestReliability.getActiveHosts().size());
+        if (bestRel != null) {
+            log.info("\nBest Reliability Solution:");
+            log.info("  Reliability: {}", String.format("%.3f", bestRel.getTotalReliability()));
+            log.info("  Cost: {}", String.format("%.2f", bestRel.getTotalCost()));
+            log.info("  Energy: {}", String.format("%.2f", bestRel.getEnergyConsumption()));
+            log.info("  Feasible: {}", bestRel.isFeasible());
+            log.info("  Active hosts: {}", bestRel.getActiveHosts().size());
         }
         
         if (balanced != null) {
-            logger.info("\nBalanced Solution:");
-            logger.info("  Cost: {}", String.format("%.2f", balanced.getTotalCost()));
-            logger.info("  Reliability: {}", String.format("%.3f", balanced.getTotalReliability()));
-            logger.info("  Energy: {}", String.format("%.2f", balanced.getEnergyConsumption()));
-            logger.info("  Feasible: {}", balanced.isFeasible());
-            logger.info("  Active hosts: {}", balanced.getActiveHosts().size());
+            log.info("\nBalanced Solution:");
+            log.info("  Cost: {}", String.format("%.2f", balanced.getTotalCost()));
+            log.info("  Reliability: {}", String.format("%.3f", balanced.getTotalReliability()));
+            log.info("  Energy: {}", String.format("%.2f", balanced.getEnergyConsumption()));
+            log.info("  Feasible: {}", balanced.isFeasible());
+            log.info("  Active hosts: {}", balanced.getActiveHosts().size());
         }
         
-        // Relatório detalhado
-        logger.info("\nDETAILED REPORT:");
-        logger.info("-".repeat(40));
+        // detailed report
+        log.info("\nDETAILED REPORT:");
+        log.info("-".repeat(40));
         System.out.println(result.getReport().generateTextReport());
         
-        // Análise de alocações (apenas para a melhor solução balanceada)
+        // analyze allocations (only for balanced solution)
         if (balanced != null) {
-            analyzeAllocation(balanced);
+            analyzeAlloc(balanced);
         }
     }
     
-    /**
-     * Analisa uma solução de alocação específica
-     */
-    private static void analyzeAllocation(AllocationSolution solution) {
-        logger.info("\nALLOCATION ANALYSIS:");
-        logger.info("-".repeat(40));
+    // analyze specific allocation solution
+    private static void analyzeAlloc(AllocationSolution sol) {
+        log.info("\nALLOCATION ANALYSIS:");
+        log.info("-".repeat(40));
         
-        solution.getActiveHosts().forEach(host -> {
-            logger.info("Host {} (cost: {}, fail_prob: {}):", 
-                      host.getId(), 
-                      String.format("%.2f", host.getActivationCost()), 
-                      String.format("%.3f", host.getFailureProbability()));
-            
-            solution.getVmsOnHost(host).forEach(vm -> {
-                logger.info("  VM {} (reliability_req: {}, priority: {})", 
-                          vm.getId(), 
-                          String.format("%.3f", vm.getMinReliability()), 
-                          String.format("%.1f", vm.getPriority()));
-            });
-        });
-        
-        // VMs não alocadas (percorre todas as VMs da instância)
-        boolean hasUnallocated = false;
-        // Aqui assumimos que temos acesso às VMs da instância através da solução
-        // Para simplificar, vamos apenas verificar VMs que estão no mapeamento mas não têm host
-        for (VM vm : solution.getVmToHost().keySet()) {
-            if (solution.getHostForVM(vm) == null) {
-                if (!hasUnallocated) {
-                    logger.info("\nUnallocated VMs:");
-                    hasUnallocated = true;
-                }
-                logger.info("  VM {} (reliability_req: {})", vm.getId(), 
-                          String.format("%.3f", vm.getMinReliability()));
-            }
+        Map<Host, List<VM>> hostToVms = new HashMap<>();
+        for (Map.Entry<VM, Host> entry : sol.getVmToHost().entrySet()) {
+            Host h = entry.getValue();
+            VM v = entry.getKey();
+            hostToVms.computeIfAbsent(h, k -> new ArrayList<>()).add(v);
         }
         
-        if (!hasUnallocated) {
-            logger.info("\nAll VMs successfully allocated!");
+        for (Map.Entry<Host, List<VM>> entry : hostToVms.entrySet()) {
+            Host h = entry.getKey();
+            List<VM> vms = entry.getValue();
+            
+            log.info("Host {} (cost={}, failProb={}):", 
+                    h.getHostId(), 
+                    String.format("%.2f", h.getCost()),
+                    String.format("%.3f", h.getFailProb()));
+            
+            for (VM vm : vms) {
+                log.info("  VM {} (minRel={}, prio={})", 
+                        vm.getVmId(),
+                        String.format("%.3f", vm.getMinRel()),
+                        String.format("%.1f", vm.getPrio()));
+            }
+            
+            // calc resource usage
+            Map<ResourceType, Double> usage = new HashMap<>();
+            for (ResourceType type : ResourceType.values()) {
+                double totalUsage = vms.stream()
+                    .mapToDouble(vm -> vm.getDemand(type))
+                    .sum();
+                usage.put(type, totalUsage);
+                
+                double utilization = totalUsage / h.getCap(type);
+                log.info("  {} usage: {}/{} ({:.1f}%)", 
+                        type, 
+                        String.format("%.1f", totalUsage),
+                        String.format("%.1f", h.getCap(type)),
+                        utilization * 100);
+            }
         }
     }
 }

@@ -82,7 +82,7 @@ public class BRKGADecoder {
             double preference = keys[prefBase + i];
             
             // Verifica se o host pode alocar a VM
-            if (host.canAllocate(vm, currentSolution.getVmToHost())) {
+            if (host.canFit(vm, currentSolution.getVmToHost())) {
                 double score = calculateHostScore(vm, host, preference, currentSolution);
                 hostPrefs.add(new HostPreference(host, preference, score));
             }
@@ -105,14 +105,14 @@ public class BRKGADecoder {
     private double calculateHostScore(VM vm, Host host, double preference, AllocationSolution solution) {
         switch (strategy) {
             case GREEDY_COST:
-                return preference + (1.0 / (1.0 + host.getActivationCost()));
+                return preference + (1.0 / (1.0 + host.getCost()));
                 
             case GREEDY_RELIABILITY:
-                return preference + host.getReliability();
+                return preference + host.getRel();
                 
             case BALANCED:
-                double costNorm = 1.0 / (1.0 + host.getActivationCost());
-                double reliability = host.getReliability();
+                double costNorm = 1.0 / (1.0 + host.getCost());
+                double reliability = host.getRel();
                 return preference + 0.5 * costNorm + 0.5 * reliability;
                 
             case FIRST_FIT:
@@ -136,7 +136,7 @@ public class BRKGADecoder {
         }
         
         // Ordena VMs não alocadas por prioridade
-        unallocatedVMs.sort(Comparator.comparingDouble(VM::getPriority).reversed());
+        unallocatedVMs.sort(Comparator.comparingDouble(VM::getPrio).reversed());
         
         for (VM vm : unallocatedVMs) {
             Host bestHost = findBestAvailableHost(vm, repairedSolution);
@@ -152,7 +152,7 @@ public class BRKGADecoder {
         List<Host> availableHosts = new ArrayList<>();
         
         for (Host host : hosts) {
-            if (host.canAllocate(vm, solution.getVmToHost())) {
+            if (host.canFit(vm, solution.getVmToHost())) {
                 availableHosts.add(host);
             }
         }
@@ -163,7 +163,7 @@ public class BRKGADecoder {
         
         // Retorna o host com menor custo dentre os disponíveis
         return availableHosts.stream()
-                .min(Comparator.comparingDouble(Host::getActivationCost))
+                .min(Comparator.comparingDouble(Host::getCost))
                 .orElse(null);
     }
     

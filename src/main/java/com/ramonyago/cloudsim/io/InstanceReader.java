@@ -99,7 +99,7 @@ public class InstanceReader {
                 String fieldName = type.name().toLowerCase();
                 if (demandsNode.has(fieldName)) {
                     double demand = demandsNode.get(fieldName).asDouble();
-                    vm.setResourceDemand(type, demand);
+                    vm.setDemand(type, demand);
                 }
             }
         }
@@ -123,7 +123,7 @@ public class InstanceReader {
                 String fieldName = type.name().toLowerCase();
                 if (capacitiesNode.has(fieldName)) {
                     double capacity = capacitiesNode.get(fieldName).asDouble();
-                    host.setResourceCapacity(type, capacity);
+                    host.setCap(type, capacity);
                 }
             }
         }
@@ -159,19 +159,19 @@ public class InstanceReader {
         
         // Criar VMs de exemplo
         VM vm1 = new VM(1, 0.95, 1.0);
-        vm1.setResourceDemand(ResourceType.CPU, 2.0);
-        vm1.setResourceDemand(ResourceType.RAM, 4.0);
-        vm1.setResourceDemand(ResourceType.STORAGE, 20.0);
+        vm1.setDemand(ResourceType.CPU, 2.0);
+        vm1.setDemand(ResourceType.RAM, 4.0);
+        vm1.setDemand(ResourceType.STORAGE, 20.0);
         
         VM vm2 = new VM(2, 0.90, 1.5);
-        vm2.setResourceDemand(ResourceType.CPU, 1.0);
-        vm2.setResourceDemand(ResourceType.RAM, 2.0);
-        vm2.setResourceDemand(ResourceType.STORAGE, 10.0);
+        vm2.setDemand(ResourceType.CPU, 1.0);
+        vm2.setDemand(ResourceType.RAM, 2.0);
+        vm2.setDemand(ResourceType.STORAGE, 10.0);
         
         VM vm3 = new VM(3, 0.98, 2.0);
-        vm3.setResourceDemand(ResourceType.CPU, 4.0);
-        vm3.setResourceDemand(ResourceType.RAM, 8.0);
-        vm3.setResourceDemand(ResourceType.STORAGE, 40.0);
+        vm3.setDemand(ResourceType.CPU, 4.0);
+        vm3.setDemand(ResourceType.RAM, 8.0);
+        vm3.setDemand(ResourceType.STORAGE, 40.0);
         
         instance.addVM(vm1);
         instance.addVM(vm2);
@@ -179,19 +179,19 @@ public class InstanceReader {
         
         // Criar hosts de exemplo
         Host host1 = new Host(1, 100.0, 0.02, 150.0);
-        host1.setResourceCapacity(ResourceType.CPU, 8.0);
-        host1.setResourceCapacity(ResourceType.RAM, 16.0);
-        host1.setResourceCapacity(ResourceType.STORAGE, 100.0);
+        host1.setCap(ResourceType.CPU, 8.0);
+        host1.setCap(ResourceType.RAM, 16.0);
+        host1.setCap(ResourceType.STORAGE, 100.0);
         
         Host host2 = new Host(2, 80.0, 0.05, 120.0);
-        host2.setResourceCapacity(ResourceType.CPU, 4.0);
-        host2.setResourceCapacity(ResourceType.RAM, 8.0);
-        host2.setResourceCapacity(ResourceType.STORAGE, 50.0);
+        host2.setCap(ResourceType.CPU, 4.0);
+        host2.setCap(ResourceType.RAM, 8.0);
+        host2.setCap(ResourceType.STORAGE, 50.0);
         
         Host host3 = new Host(3, 120.0, 0.01, 180.0);
-        host3.setResourceCapacity(ResourceType.CPU, 12.0);
-        host3.setResourceCapacity(ResourceType.RAM, 24.0);
-        host3.setResourceCapacity(ResourceType.STORAGE, 200.0);
+        host3.setCap(ResourceType.CPU, 12.0);
+        host3.setCap(ResourceType.RAM, 24.0);
+        host3.setCap(ResourceType.STORAGE, 200.0);
         
         instance.addHost(host1);
         instance.addHost(host2);

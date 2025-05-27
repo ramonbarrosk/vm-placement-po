@@ -171,8 +171,8 @@ public class TabuSearch {
         if (targetHost == null) return true; // Removal is always valid
         
         // Check resource constraints using the correct API
-        Map<ResourceType, Double> vmDemands = vm.getResourceDemands();
-        Map<ResourceType, Double> hostCapacities = targetHost.getResourceCapacities();
+        Map<ResourceType, Double> vmDemands = vm.getDemands();
+        Map<ResourceType, Double> hostCapacities = targetHost.getCaps();
         
         // Calculate current usage on the target host
         Map<ResourceType, Double> currentUsage = new HashMap<>();
@@ -184,7 +184,7 @@ public class TabuSearch {
         for (VM allocatedVm : solution.getVmsOnHost(targetHost)) {
             for (ResourceType type : ResourceType.values()) {
                 double current = currentUsage.get(type);
-                currentUsage.put(type, current + allocatedVm.getResourceDemand(type));
+                currentUsage.put(type, current + allocatedVm.getDemand(type));
             }
         }
         
@@ -200,8 +200,8 @@ public class TabuSearch {
         }
         
         // Check reliability requirement
-        double hostReliability = 1.0 - targetHost.getFailureProbability();
-        return hostReliability >= vm.getMinReliability();
+        double hostReliability = 1.0 - targetHost.getFailProb();
+        return hostReliability >= vm.getMinRel();
     }
     
     /**
@@ -210,7 +210,7 @@ public class TabuSearch {
     private boolean canRemoveVM(AllocationSolution solution, VM vm) {
         // For now, assume all VMs should be allocated
         // This could be enhanced with priority-based logic
-        return vm.getPriority() < 1.0;
+        return vm.getPrio() < 1.0;
     }
     
     /**
@@ -388,9 +388,9 @@ public class TabuSearch {
         @Override
         public String toString() {
             return String.format("Move VM%d from Host%s to Host%s", 
-                               vm.getId(), 
-                               fromHost != null ? fromHost.getId() : "null",
-                               toHost != null ? toHost.getId() : "null");
+                               vm.getVmId(), 
+                               fromHost != null ? fromHost.getHostId() : "null",
+                               toHost != null ? toHost.getHostId() : "null");
         }
     }
 } 

@@ -3,120 +3,111 @@ package com.ramonyago.cloudsim.model;
 import java.util.Map;
 import java.util.HashMap;
 
-/**
- * Representa um Host físico com capacidades de múltiplos recursos,
- * custo de ativação e probabilidade de falha.
- */
+// Host class - represents physical machines
 public class Host {
-    private final int id;
-    private final Map<ResourceType, Double> resourceCapacities;
-    private final double activationCost; // cost_h
-    private final double failureProbability; // p_h
-    private final double energyConsumption;
+    private final int hostId;
+    private final Map<ResourceType, Double> caps;
+    private final double cost; // activation cost
+    private final double failProb; // failure probability
+    private final double energy;
     
-    public Host(int id, double activationCost, double failureProbability) {
-        this.id = id;
-        this.activationCost = activationCost;
-        this.failureProbability = failureProbability;
-        this.resourceCapacities = new HashMap<>();
-        this.energyConsumption = 100.0; // Valor padrão
+    public Host(int hostId, double cost, double failProb) {
+        this.hostId = hostId;
+        this.cost = cost;
+        this.failProb = failProb;
+        this.caps = new HashMap<>();
+        this.energy = 100.0; // default value
         
-        // Validações
-        if (failureProbability < 0 || failureProbability > 1) {
-            throw new IllegalArgumentException("Failure probability must be between 0 and 1");
+        // basic validation
+        if (failProb < 0 || failProb > 1) {
+            throw new IllegalArgumentException("fail prob must be 0-1");
         }
-        if (activationCost < 0) {
-            throw new IllegalArgumentException("Activation cost cannot be negative");
+        if (cost < 0) {
+            throw new IllegalArgumentException("cost cant be negative");
         }
     }
     
-    public Host(int id, double activationCost, double failureProbability, double energyConsumption) {
-        this.id = id;
-        this.activationCost = activationCost;
-        this.failureProbability = failureProbability;
-        this.resourceCapacities = new HashMap<>();
-        this.energyConsumption = energyConsumption;
+    public Host(int hostId, double cost, double failProb, double energy) {
+        this.hostId = hostId;
+        this.cost = cost;
+        this.failProb = failProb;
+        this.caps = new HashMap<>();
+        this.energy = energy;
         
-        // Validações
-        if (failureProbability < 0 || failureProbability > 1) {
-            throw new IllegalArgumentException("Failure probability must be between 0 and 1");
+        // basic validation
+        if (failProb < 0 || failProb > 1) {
+            throw new IllegalArgumentException("fail prob must be 0-1");
         }
-        if (activationCost < 0) {
-            throw new IllegalArgumentException("Activation cost cannot be negative");
+        if (cost < 0) {
+            throw new IllegalArgumentException("cost cant be negative");
         }
     }
     
-    public int getId() {
-        return id;
+    public int getHostId() {
+        return hostId;
     }
     
-    public double getActivationCost() {
-        return activationCost;
+    public double getCost() {
+        return cost;
     }
     
-    public double getFailureProbability() {
-        return failureProbability;
+    public double getFailProb() {
+        return failProb;
     }
     
-    public double getEnergyConsumption() {
-        return energyConsumption;
+    public double getEnergy() {
+        return energy;
     }
     
-    /**
-     * Calcula a confiabilidade do host (1 - p_h)
-     */
-    public double getReliability() {
-        return 1.0 - failureProbability;
+    // reliability = 1 - fail_prob
+    public double getRel() {
+        return 1.0 - failProb;
     }
     
-    /**
-     * Retorna log(p_h) usado na restrição linearizada de confiabilidade
-     */
-    public double getLogFailureProbability() {
-        return Math.log(failureProbability);
+    // log of failure prob for constraints
+    public double getLogFailProb() {
+        return Math.log(failProb);
     }
     
-    public Map<ResourceType, Double> getResourceCapacities() {
-        return new HashMap<>(resourceCapacities);
+    public Map<ResourceType, Double> getCaps() {
+        return new HashMap<>(caps);
     }
     
-    public double getResourceCapacity(ResourceType type) {
-        return resourceCapacities.getOrDefault(type, 0.0);
+    public double getCap(ResourceType type) {
+        return caps.getOrDefault(type, 0.0);
     }
     
-    public void setResourceCapacity(ResourceType type, double capacity) {
+    public void setCap(ResourceType type, double capacity) {
         if (capacity < 0) {
-            throw new IllegalArgumentException("Resource capacity cannot be negative");
+            throw new IllegalArgumentException("capacity cant be negative");
         }
-        resourceCapacities.put(type, capacity);
+        caps.put(type, capacity);
     }
     
-    /**
-     * Verifica se o host pode alocar uma VM considerando as demandas de recursos
-     */
-    public boolean canAllocate(VM vm, Map<VM, Host> currentAllocations) {
-        // Calcula o uso atual de recursos
-        Map<ResourceType, Double> currentUsage = new HashMap<>();
+    // check if host can fit this VM
+    public boolean canFit(VM vm, Map<VM, Host> currentAllocs) {
+        // calc current usage
+        Map<ResourceType, Double> usage = new HashMap<>();
         for (ResourceType type : ResourceType.values()) {
-            currentUsage.put(type, 0.0);
+            usage.put(type, 0.0);
         }
         
-        // Soma o uso das VMs já alocadas neste host
-        for (Map.Entry<VM, Host> entry : currentAllocations.entrySet()) {
+        // sum up VMs already on this host
+        for (Map.Entry<VM, Host> entry : currentAllocs.entrySet()) {
             if (entry.getValue().equals(this)) {
-                VM allocatedVm = entry.getKey();
+                VM allocVm = entry.getKey();
                 for (ResourceType type : ResourceType.values()) {
-                    double currentVal = currentUsage.get(type);
-                    double vmDemand = allocatedVm.getResourceDemand(type);
-                    currentUsage.put(type, currentVal + vmDemand);
+                    double curr = usage.get(type);
+                    double vmDemand = allocVm.getDemand(type);
+                    usage.put(type, curr + vmDemand);
                 }
             }
         }
         
-        // Verifica se há capacidade suficiente para a nova VM
+        // check if new VM fits
         for (ResourceType type : ResourceType.values()) {
-            double totalDemand = currentUsage.get(type) + vm.getResourceDemand(type);
-            if (totalDemand > getResourceCapacity(type)) {
+            double totalDemand = usage.get(type) + vm.getDemand(type);
+            if (totalDemand > getCap(type)) {
                 return false;
             }
         }
@@ -129,17 +120,17 @@ public class Host {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Host host = (Host) o;
-        return id == host.id;
+        return hostId == host.hostId;
     }
     
     @Override
     public int hashCode() {
-        return Integer.hashCode(id);
+        return Integer.hashCode(hostId);
     }
     
     @Override
     public String toString() {
-        return String.format("Host{id=%d, cost=%.2f, failProb=%.3f, capacities=%s}", 
-                           id, activationCost, failureProbability, resourceCapacities);
+        return String.format("Host{id=%d, cost=%.2f, failProb=%.3f, caps=%s}", 
+                           hostId, cost, failProb, caps);
     }
 } 

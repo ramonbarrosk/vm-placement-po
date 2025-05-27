@@ -59,14 +59,14 @@ public class ProblemInstance {
     
     public VM getVM(int id) {
         return vms.stream()
-                .filter(vm -> vm.getId() == id)
+                .filter(vm -> vm.getVmId() == id)
                 .findFirst()
                 .orElse(null);
     }
     
     public Host getHost(int id) {
         return hosts.stream()
-                .filter(host -> host.getId() == id)
+                .filter(host -> host.getHostId() == id)
                 .findFirst()
                 .orElse(null);
     }
@@ -110,23 +110,23 @@ public class ProblemInstance {
         // Verifica IDs únicos das VMs
         Set<Integer> vmIds = new HashSet<>();
         for (VM vm : vms) {
-            if (!vmIds.add(vm.getId())) {
-                errors.add("Duplicate VM ID: " + vm.getId());
+            if (!vmIds.add(vm.getVmId())) {
+                errors.add("Duplicate VM ID: " + vm.getVmId());
             }
         }
         
         // Verifica IDs únicos dos hosts
         Set<Integer> hostIds = new HashSet<>();
         for (Host host : hosts) {
-            if (!hostIds.add(host.getId())) {
-                errors.add("Duplicate Host ID: " + host.getId());
+            if (!hostIds.add(host.getHostId())) {
+                errors.add("Duplicate Host ID: " + host.getHostId());
             }
         }
         
         // Verifica se há pelo menos um tipo de recurso definido
         boolean hasResourceTypes = false;
         for (VM vm : vms) {
-            if (!vm.getResourceDemands().isEmpty()) {
+            if (!vm.getDemands().isEmpty()) {
                 hasResourceTypes = true;
                 break;
             }
@@ -139,10 +139,10 @@ public class ProblemInstance {
         // Verifica se hosts têm capacidades suficientes
         for (ResourceType type : ResourceType.values()) {
             double totalDemand = vms.stream()
-                    .mapToDouble(vm -> vm.getResourceDemand(type))
+                    .mapToDouble(vm -> vm.getDemand(type))
                     .sum();
             double totalCapacity = hosts.stream()
-                    .mapToDouble(host -> host.getResourceCapacity(type))
+                    .mapToDouble(host -> host.getCap(type))
                     .sum();
             
             if (totalDemand > totalCapacity) {
@@ -185,30 +185,30 @@ public class ProblemInstance {
             // Calcula demandas totais e médias das VMs
             for (ResourceType type : ResourceType.values()) {
                 double totalDemand = vms.stream()
-                        .mapToDouble(vm -> vm.getResourceDemand(type))
+                        .mapToDouble(vm -> vm.getDemand(type))
                         .sum();
                 totalVmDemands.put(type, totalDemand);
                 avgVmDemands.put(type, vmCount > 0 ? totalDemand / vmCount : 0.0);
                 
                 double totalCapacity = hosts.stream()
-                        .mapToDouble(host -> host.getResourceCapacity(type))
+                        .mapToDouble(host -> host.getCap(type))
                         .sum();
                 totalHostCapacities.put(type, totalCapacity);
                 avgHostCapacities.put(type, hostCount > 0 ? totalCapacity / hostCount : 0.0);
             }
             
             this.avgVmReliabilityRequirement = vms.stream()
-                    .mapToDouble(VM::getMinReliability)
+                    .mapToDouble(VM::getMinRel)
                     .average()
                     .orElse(0.0);
             
             this.avgHostFailureProbability = hosts.stream()
-                    .mapToDouble(Host::getFailureProbability)
+                    .mapToDouble(Host::getFailProb)
                     .average()
                     .orElse(0.0);
             
             this.totalHostCost = hosts.stream()
-                    .mapToDouble(Host::getActivationCost)
+                    .mapToDouble(Host::getCost)
                     .sum();
         }
         

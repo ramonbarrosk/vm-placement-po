@@ -101,7 +101,7 @@ public class AllocationSolution {
     public double getTotalCost() {
         if (totalCost == null) {
             totalCost = activeHosts.stream()
-                    .mapToDouble(Host::getActivationCost)
+                    .mapToDouble(Host::getCost)
                     .sum();
         }
         return totalCost;
@@ -133,7 +133,7 @@ public class AllocationSolution {
         if (host == null) {
             return 0.0; // VM não alocada
         }
-        return 1.0 - host.getFailureProbability();
+        return 1.0 - host.getFailProb();
     }
     
     /**
@@ -142,7 +142,7 @@ public class AllocationSolution {
     public double getEnergyConsumption() {
         if (energyConsumption == null) {
             energyConsumption = activeHosts.stream()
-                    .mapToDouble(Host::getEnergyConsumption)
+                    .mapToDouble(Host::getEnergy)
                     .sum();
         }
         return energyConsumption;
@@ -161,9 +161,9 @@ public class AllocationSolution {
                 int i = 0;
                 for (Host host : activeHosts) {
                     double totalCpuDemand = getVmsOnHost(host).stream()
-                            .mapToDouble(vm -> vm.getResourceDemand(ResourceType.CPU))
+                            .mapToDouble(vm -> vm.getDemand(ResourceType.CPU))
                             .sum();
-                    cpuUtilizations[i++] = totalCpuDemand / host.getResourceCapacity(ResourceType.CPU);
+                    cpuUtilizations[i++] = totalCpuDemand / host.getCap(ResourceType.CPU);
                 }
                 
                 double mean = Arrays.stream(cpuUtilizations).average().orElse(0.0);
@@ -208,14 +208,14 @@ public class AllocationSolution {
             for (VM vm : getVmsOnHost(host)) {
                 for (ResourceType type : ResourceType.values()) {
                     double currentUsage = hostUsage.get(type);
-                    hostUsage.put(type, currentUsage + vm.getResourceDemand(type));
+                    hostUsage.put(type, currentUsage + vm.getDemand(type));
                 }
             }
             
             // Verifica violações de capacidade
             for (ResourceType type : ResourceType.values()) {
                 double usage = hostUsage.get(type);
-                double capacity = host.getResourceCapacity(type);
+                double capacity = host.getCap(type);
                 if (usage > capacity) {
                     feasible = false;
                     constraintViolation += (usage - capacity) / capacity;
@@ -226,9 +226,9 @@ public class AllocationSolution {
         // Verifica restrições de confiabilidade mínima
         for (VM vm : vms) {
             double vmReliability = getVMReliability(vm);
-            if (vmReliability < vm.getMinReliability()) {
+            if (vmReliability < vm.getMinRel()) {
                 feasible = false;
-                constraintViolation += vm.getMinReliability() - vmReliability;
+                constraintViolation += vm.getMinRel() - vmReliability;
             }
         }
     }

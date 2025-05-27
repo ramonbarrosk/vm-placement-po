@@ -8,57 +8,57 @@ import java.util.HashMap;
  * e requisitos de confiabilidade.
  */
 public class VM {
-    private final int id;
-    private final Map<ResourceType, Double> resourceDemands;
-    private final double minReliability; // R_min_v
-    private final double priority;
+    private final int vmId;
+    private final Map<ResourceType, Double> demands;
+    private final double minRel; // minimum reliability needed
+    private final double prio;
     
-    public VM(int id, double minReliability) {
-        this.id = id;
-        this.minReliability = minReliability;
-        this.resourceDemands = new HashMap<>();
-        this.priority = 1.0;
+    public VM(int vmId, double minRel) {
+        this.vmId = vmId;
+        this.minRel = minRel;
+        this.demands = new HashMap<>();
+        this.prio = 1.0;
     }
     
-    public VM(int id, double minReliability, double priority) {
-        this.id = id;
-        this.minReliability = minReliability;
-        this.resourceDemands = new HashMap<>();
-        this.priority = priority;
+    public VM(int vmId, double minRel, double prio) {
+        this.vmId = vmId;
+        this.minRel = minRel;
+        this.demands = new HashMap<>();
+        this.prio = prio;
     }
     
-    public int getId() {
-        return id;
+    public int getVmId() {
+        return vmId;
     }
     
-    public double getMinReliability() {
-        return minReliability;
+    public double getMinRel() {
+        return minRel;
     }
     
-    public double getPriority() {
-        return priority;
+    public double getPrio() {
+        return prio;
     }
     
-    public Map<ResourceType, Double> getResourceDemands() {
-        return new HashMap<>(resourceDemands);
+    public Map<ResourceType, Double> getDemands() {
+        return new HashMap<>(demands);
     }
     
-    public double getResourceDemand(ResourceType type) {
-        return resourceDemands.getOrDefault(type, 0.0);
+    public double getDemand(ResourceType type) {
+        return demands.getOrDefault(type, 0.0);
     }
     
-    public void setResourceDemand(ResourceType type, double demand) {
+    public void setDemand(ResourceType type, double demand) {
         if (demand < 0) {
-            throw new IllegalArgumentException("Resource demand cannot be negative");
+            throw new IllegalArgumentException("demand cant be negative");
         }
-        resourceDemands.put(type, demand);
+        demands.put(type, demand);
     }
     
     /**
      * Calcula o valor de log(1 - R_min_v) usado na restrição linearizada de confiabilidade
      */
-    public double getLogFailureProbability() {
-        return Math.log(1 - minReliability);
+    public double getLogFailProb() {
+        return Math.log(1 - minRel);
     }
     
     @Override
@@ -66,17 +66,17 @@ public class VM {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         VM vm = (VM) o;
-        return id == vm.id;
+        return vmId == vm.vmId;
     }
     
     @Override
     public int hashCode() {
-        return Integer.hashCode(id);
+        return Integer.hashCode(vmId);
     }
     
     @Override
     public String toString() {
-        return String.format("VM{id=%d, minReliability=%.3f, demands=%s}", 
-                           id, minReliability, resourceDemands);
+        return String.format("VM{id=%d, minRel=%.3f, demands=%s}", 
+                           vmId, minRel, demands);
     }
 } 
