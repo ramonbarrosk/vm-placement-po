@@ -9,7 +9,6 @@ com\ramonyago\cloudsim\algorithm\TabuSearch.class
 com\ramonyago\cloudsim\algorithm\brkga\BRKGAParameters.class
 com\ramonyago\cloudsim\algorithm\TabuSearch$TabuParameters.class
 com\ramonyago\cloudsim\VMAllocationOptimizer.class
-com\ramonyago\cloudsim\SimulacaoBRKGA$1.class
 com\ramonyago\cloudsim\algorithm\brkga\BRKGADecoder$VMOrder.class
 com\ramonyago\cloudsim\model\VM.class
 com\ramonyago\cloudsim\model\ResourceType.class
@@ -17,7 +16,6 @@ com\ramonyago\cloudsim\model\AllocationSolution.class
 TestRunner.class
 com\ramonyago\cloudsim\algorithm\brkga\BRKGADecoder$DecodingStrategy.class
 com\ramonyago\cloudsim\ExecutionReport$Builder.class
-com\ramonyago\cloudsim\SimulacaoBRKGA.class
 com\ramonyago\cloudsim\model\Host.class
 com\ramonyago\cloudsim\VMAllocationOptimizer$OptimizationResult.class
 com\ramonyago\cloudsim\algorithm\brkga\Individual.class
@@ -29,4 +27,3 @@ com\ramonyago\cloudsim\util\ParetoArchive$ArchiveStatistics.class
 com\ramonyago\cloudsim\algorithm\brkga\BRKGADecoder.class
 com\ramonyago\cloudsim\algorithm\brkga\BRKGADecoder$1.class
 com\ramonyago\cloudsim\model\ProblemInstance.class
-com\ramonyago\cloudsim\AlocacaoBRKGA.class
