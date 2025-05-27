@@ -18,16 +18,11 @@ public class OptimizationParameters {
     private final double brkgaInheritanceProbability;
     private final BRKGADecoder.DecodingStrategy decodingStrategy;
     
-    // Parâmetros da Busca Tabu (para implementação futura)
+    // Parâmetros da Busca Tabu
     private final int tabuListSize;
     private final int tabuMaxIterations;
     private final boolean tabuUseIntensification;
     private final boolean tabuUseDiversification;
-    
-    // Parâmetros do MOILP (para implementação futura)
-    private final double moilpTimeLimit;
-    private final boolean useMOILPRefinement;
-    private final String solverType;
     
     private OptimizationParameters(Builder builder) {
         this.randomSeed = builder.randomSeed;
@@ -44,10 +39,6 @@ public class OptimizationParameters {
         this.tabuMaxIterations = builder.tabuMaxIterations;
         this.tabuUseIntensification = builder.tabuUseIntensification;
         this.tabuUseDiversification = builder.tabuUseDiversification;
-        
-        this.moilpTimeLimit = builder.moilpTimeLimit;
-        this.useMOILPRefinement = builder.useMOILPRefinement;
-        this.solverType = builder.solverType;
     }
     
     // Getters
@@ -66,10 +57,6 @@ public class OptimizationParameters {
     public boolean isTabuUseIntensification() { return tabuUseIntensification; }
     public boolean isTabuUseDiversification() { return tabuUseDiversification; }
     
-    public double getMoilpTimeLimit() { return moilpTimeLimit; }
-    public boolean isUseMOILPRefinement() { return useMOILPRefinement; }
-    public String getSolverType() { return solverType; }
-    
     /**
      * Cria parâmetros padrão para testes rápidos
      */
@@ -86,7 +73,6 @@ public class OptimizationParameters {
                 .brkgaMaxGenerations(2000)
                 .tabuMaxIterations(1000)
                 .archiveSize(200)
-                .moilpTimeLimit(3600.0) // 1 hora para execução intensiva
                 .build();
     }
     
@@ -107,11 +93,9 @@ public class OptimizationParameters {
         return String.format("OptimizationParameters{" +
                            "BRKGA(pop=%d, gen=%d, elite=%.2f, mutant=%.2f), " +
                            "Tabu(list=%d, iter=%d), " +
-                           "MOILP(time=%.1f, solver=%s), " +
                            "archive=%d, seed=%d}",
                            brkgaPopulationSize, brkgaMaxGenerations, brkgaEliteRatio, brkgaMutantRatio,
                            tabuListSize, tabuMaxIterations,
-                           moilpTimeLimit, solverType,
                            archiveSize, randomSeed);
     }
     
@@ -134,10 +118,6 @@ public class OptimizationParameters {
         private int tabuMaxIterations = 500;
         private boolean tabuUseIntensification = true;
         private boolean tabuUseDiversification = true;
-        
-        private double moilpTimeLimit = 1800.0; // 30 minutos - AUMENTADO SIGNIFICATIVAMENTE PARA TESTES
-        private boolean useMOILPRefinement = false;
-        private String solverType = "GLPK";
         
         public Builder randomSeed(long randomSeed) {
             this.randomSeed = randomSeed;
@@ -199,22 +179,36 @@ public class OptimizationParameters {
             return this;
         }
         
-        public Builder moilpTimeLimit(double moilpTimeLimit) {
-            this.moilpTimeLimit = moilpTimeLimit;
-            return this;
-        }
-        
-        public Builder useMOILPRefinement(boolean useMOILPRefinement) {
-            this.useMOILPRefinement = useMOILPRefinement;
-            return this;
-        }
-        
-        public Builder solverType(String solverType) {
-            this.solverType = solverType;
-            return this;
-        }
-        
         public OptimizationParameters build() {
+            // Validate parameters
+            if (brkgaPopulationSize <= 0) {
+                throw new IllegalArgumentException("BRKGA population size must be positive");
+            }
+            if (brkgaMaxGenerations <= 0) {
+                throw new IllegalArgumentException("BRKGA max generations must be positive");
+            }
+            if (brkgaEliteRatio < 0 || brkgaEliteRatio > 1) {
+                throw new IllegalArgumentException("BRKGA elite ratio must be between 0 and 1");
+            }
+            if (brkgaMutantRatio < 0 || brkgaMutantRatio > 1) {
+                throw new IllegalArgumentException("BRKGA mutant ratio must be between 0 and 1");
+            }
+            if (brkgaEliteRatio + brkgaMutantRatio > 1) {
+                throw new IllegalArgumentException("BRKGA elite ratio + mutant ratio must not exceed 1");
+            }
+            if (brkgaInheritanceProbability < 0 || brkgaInheritanceProbability > 1) {
+                throw new IllegalArgumentException("BRKGA inheritance probability must be between 0 and 1");
+            }
+            if (tabuListSize <= 0) {
+                throw new IllegalArgumentException("Tabu list size must be positive");
+            }
+            if (tabuMaxIterations <= 0) {
+                throw new IllegalArgumentException("Tabu max iterations must be positive");
+            }
+            if (archiveSize <= 0) {
+                throw new IllegalArgumentException("Archive size must be positive");
+            }
+            
             return new OptimizationParameters(this);
         }
     }

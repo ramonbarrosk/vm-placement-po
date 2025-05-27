@@ -22,13 +22,9 @@ public class ExecutionReport {
     private final int brkgaGenerations;
     private final List<Integer> brkgaArchiveSizeHistory;
     
-    // Estatísticas da Busca Tabu (futuro)
+    // Estatísticas da Busca Tabu
     private final long tabuExecutionTime;
     private final int tabuIterations;
-    
-    // Estatísticas do MOILP (futuro)
-    private final long moilpExecutionTime;
-    private final boolean moilpOptimal;
     
     private ExecutionReport(Builder builder) {
         this.instance = builder.instance;
@@ -43,9 +39,6 @@ public class ExecutionReport {
         
         this.tabuExecutionTime = builder.tabuExecutionTime;
         this.tabuIterations = builder.tabuIterations;
-        
-        this.moilpExecutionTime = builder.moilpExecutionTime;
-        this.moilpOptimal = builder.moilpOptimal;
     }
     
     // Getters
@@ -61,9 +54,6 @@ public class ExecutionReport {
     
     public long getTabuExecutionTime() { return tabuExecutionTime; }
     public int getTabuIterations() { return tabuIterations; }
-    
-    public long getMoilpExecutionTime() { return moilpExecutionTime; }
-    public boolean isMoilpOptimal() { return moilpOptimal; }
     
     /**
      * Gera um relatório em formato texto
@@ -212,9 +202,6 @@ public class ExecutionReport {
         private long tabuExecutionTime = 0;
         private int tabuIterations = 0;
         
-        private long moilpExecutionTime = 0;
-        private boolean moilpOptimal = false;
-        
         public Builder instance(ProblemInstance instance) {
             this.instance = instance;
             return this;
@@ -257,16 +244,6 @@ public class ExecutionReport {
         
         public Builder tabuIterations(int tabuIterations) {
             this.tabuIterations = tabuIterations;
-            return this;
-        }
-        
-        public Builder moilpExecutionTime(long moilpExecutionTime) {
-            this.moilpExecutionTime = moilpExecutionTime;
-            return this;
-        }
-        
-        public Builder moilpOptimal(boolean moilpOptimal) {
-            this.moilpOptimal = moilpOptimal;
             return this;
         }
         

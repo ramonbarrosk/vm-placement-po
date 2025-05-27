@@ -2,7 +2,6 @@ package com.ramonyago.cloudsim;
 
 import com.ramonyago.cloudsim.algorithm.brkga.*;
 import com.ramonyago.cloudsim.algorithm.TabuSearch;
-import com.ramonyago.cloudsim.algorithm.MOILP;
 import com.ramonyago.cloudsim.io.InstanceReader;
 import com.ramonyago.cloudsim.model.AllocationSolution;
 import com.ramonyago.cloudsim.model.ProblemInstance;
@@ -14,8 +13,8 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Classe principal que orquestra o fluxo híbrido completo para otimização 
- * da alocação de VMs: BRKGA → Busca Tabu → MOILP
+ * Classe principal que orquestra o fluxo híbrido para otimização 
+ * da alocação de VMs: BRKGA → Busca Tabu
  */
 public class VMAllocationOptimizer {
     private static final Logger logger = LoggerFactory.getLogger(VMAllocationOptimizer.class);
@@ -26,7 +25,6 @@ public class VMAllocationOptimizer {
     // Componentes dos algoritmos
     private MOBRKGA brkga;
     private TabuSearch tabuSearch;
-    private MOILP moilp;
     private ParetoArchive finalArchive;
     
     // Estatísticas de execução
@@ -58,12 +56,8 @@ public class VMAllocationOptimizer {
             logger.info("=== Phase 2: Multi-objective Tabu Search ===");
             ParetoArchive tabuArchive = runTabuSearch(brkgaArchive);
             
-            // Fase 3: MOILP
-            logger.info("=== Phase 3: Multi-objective Integer Linear Programming ===");
-            ParetoArchive moilpArchive = runMOILP(tabuArchive);
-            
             // Combinação final
-            finalArchive = combineParetoFronts(brkgaArchive, tabuArchive, moilpArchive);
+            finalArchive = combineParetoFronts(brkgaArchive, tabuArchive);
             
             totalExecutionTime = System.currentTimeMillis() - startTime;
             
@@ -125,26 +119,6 @@ public class VMAllocationOptimizer {
     }
     
     /**
-     * Executa MOILP
-     */
-    private ParetoArchive runMOILP(ParetoArchive guidingSolutions) {
-        MOILP.MOILPParameters moilpParams = new MOILP.MOILPParameters(
-                parameters.getMoilpTimeLimit(),
-                100, // max variables for exact solution
-                10,  // number of epsilon steps
-                parameters.getArchiveSize(),
-                parameters.getSolverType()
-        );
-        
-        moilp = new MOILP(instance, moilpParams);
-        ParetoArchive moilpArchive = moilp.solve(guidingSolutions);
-        
-        logger.info("MOILP completed. Archive size: {}, Solutions generated: {}, Optimal: {}", 
-                   moilpArchive.size(), moilp.getSolutionsGenerated(), moilp.isOptimalSolutions());
-        return moilpArchive;
-    }
-    
-    /**
      * Combina múltiplas fronteiras de Pareto em uma única
      */
     private ParetoArchive combineParetoFronts(ParetoArchive... archives) {
@@ -178,11 +152,6 @@ public class VMAllocationOptimizer {
         if (tabuSearch != null) {
             reportBuilder.tabuExecutionTime(tabuSearch.getExecutionTime())
                         .tabuIterations(tabuSearch.getIterations());
-        }
-        
-        if (moilp != null) {
-            reportBuilder.moilpExecutionTime(moilp.getExecutionTime())
-                        .moilpOptimal(moilp.isOptimalSolutions());
         }
         
         return reportBuilder.build();

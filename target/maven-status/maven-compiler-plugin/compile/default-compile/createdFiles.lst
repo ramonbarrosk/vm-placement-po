@@ -22,14 +22,11 @@ com\ramonyago\cloudsim\model\Host.class
 com\ramonyago\cloudsim\VMAllocationOptimizer$OptimizationResult.class
 com\ramonyago\cloudsim\algorithm\brkga\Individual.class
 com\ramonyago\cloudsim\App.class
-com\ramonyago\cloudsim\MOILPAnalyzer.class
 com\ramonyago\cloudsim\util\ParetoArchive.class
 com\ramonyago\cloudsim\algorithm\brkga\BRKGAParameters$Builder.class
 com\ramonyago\cloudsim\model\ProblemInstance$InstanceStatistics.class
 com\ramonyago\cloudsim\util\ParetoArchive$ArchiveStatistics.class
 com\ramonyago\cloudsim\algorithm\brkga\BRKGADecoder.class
-com\ramonyago\cloudsim\algorithm\MOILP.class
 com\ramonyago\cloudsim\algorithm\brkga\BRKGADecoder$1.class
-com\ramonyago\cloudsim\algorithm\MOILP$MOILPParameters.class
 com\ramonyago\cloudsim\model\ProblemInstance.class
 com\ramonyago\cloudsim\AlocacaoBRKGA.class

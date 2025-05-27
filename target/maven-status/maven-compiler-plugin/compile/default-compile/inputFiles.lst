@@ -3,9 +3,7 @@ C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\model\Allocatio
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\ExecutionReport.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\model\ProblemInstance.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\model\VM.java
-C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\MOILPAnalyzer.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\algorithm\brkga\BRKGADecoder.java
-C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\algorithm\MOILP.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\algorithm\TabuSearch.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\io\InstanceReader.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\util\ParetoArchive.java
