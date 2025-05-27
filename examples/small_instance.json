@@ -1,0 +1,69 @@
+{
+  "metadata": {
+    "description": "Small instance for quick testing",
+    "difficulty": "easy",
+    "source": "generated",
+    "created": "2024-01-01"
+  },
+  "vms": [
+    {
+      "id": 1,
+      "minReliability": 0.90,
+      "priority": 1.0,
+      "resourceDemands": {
+        "cpu": 1.0,
+        "ram": 2.0,
+        "storage": 10.0,
+        "network": 50.0
+      }
+    },
+    {
+      "id": 2,
+      "minReliability": 0.95,
+      "priority": 1.5,
+      "resourceDemands": {
+        "cpu": 2.0,
+        "ram": 4.0,
+        "storage": 20.0,
+        "network": 100.0
+      }
+    },
+    {
+      "id": 3,
+      "minReliability": 0.85,
+      "priority": 0.8,
+      "resourceDemands": {
+        "cpu": 1.5,
+        "ram": 3.0,
+        "storage": 15.0,
+        "network": 75.0
+      }
+    }
+  ],
+  "hosts": [
+    {
+      "id": 1,
+      "activationCost": 80.0,
+      "failureProbability": 0.03,
+      "energyConsumption": 120.0,
+      "resourceCapacities": {
+        "cpu": 4.0,
+        "ram": 8.0,
+        "storage": 50.0,
+        "network": 500.0
+      }
+    },
+    {
+      "id": 2,
+      "activationCost": 100.0,
+      "failureProbability": 0.02,
+      "energyConsumption": 150.0,
+      "resourceCapacities": {
+        "cpu": 6.0,
+        "ram": 12.0,
+        "storage": 80.0,
+        "network": 800.0
+      }
+    }
+  ]
+} 
