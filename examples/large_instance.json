@@ -1,0 +1,172 @@
+{
+  "metadata": {
+    "description": "Large instance for intensive testing",
+    "difficulty": "hard",
+    "source": "generated",
+    "created": "2024-01-01"
+  },
+  "vms": [
+    {
+      "id": 1,
+      "minReliability": 0.95,
+      "priority": 2.0,
+      "resourceDemands": {
+        "cpu": 3.0,
+        "ram": 6.0,
+        "storage": 30.0,
+        "network": 200.0
+      }
+    },
+    {
+      "id": 2,
+      "minReliability": 0.90,
+      "priority": 1.5,
+      "resourceDemands": {
+        "cpu": 2.0,
+        "ram": 4.0,
+        "storage": 20.0,
+        "network": 150.0
+      }
+    },
+    {
+      "id": 3,
+      "minReliability": 0.98,
+      "priority": 3.0,
+      "resourceDemands": {
+        "cpu": 4.0,
+        "ram": 8.0,
+        "storage": 40.0,
+        "network": 300.0
+      }
+    },
+    {
+      "id": 4,
+      "minReliability": 0.85,
+      "priority": 1.0,
+      "resourceDemands": {
+        "cpu": 1.5,
+        "ram": 3.0,
+        "storage": 15.0,
+        "network": 100.0
+      }
+    },
+    {
+      "id": 5,
+      "minReliability": 0.92,
+      "priority": 1.8,
+      "resourceDemands": {
+        "cpu": 2.5,
+        "ram": 5.0,
+        "storage": 25.0,
+        "network": 180.0
+      }
+    },
+    {
+      "id": 6,
+      "minReliability": 0.88,
+      "priority": 1.2,
+      "resourceDemands": {
+        "cpu": 1.8,
+        "ram": 3.5,
+        "storage": 18.0,
+        "network": 120.0
+      }
+    },
+    {
+      "id": 7,
+      "minReliability": 0.96,
+      "priority": 2.5,
+      "resourceDemands": {
+        "cpu": 3.5,
+        "ram": 7.0,
+        "storage": 35.0,
+        "network": 250.0
+      }
+    },
+    {
+      "id": 8,
+      "minReliability": 0.87,
+      "priority": 0.9,
+      "resourceDemands": {
+        "cpu": 1.2,
+        "ram": 2.5,
+        "storage": 12.0,
+        "network": 80.0
+      }
+    }
+  ],
+  "hosts": [
+    {
+      "id": 1,
+      "activationCost": 120.0,
+      "failureProbability": 0.01,
+      "energyConsumption": 180.0,
+      "resourceCapacities": {
+        "cpu": 8.0,
+        "ram": 16.0,
+        "storage": 100.0,
+        "network": 1000.0
+      }
+    },
+    {
+      "id": 2,
+      "activationCost": 90.0,
+      "failureProbability": 0.04,
+      "energyConsumption": 140.0,
+      "resourceCapacities": {
+        "cpu": 6.0,
+        "ram": 12.0,
+        "storage": 80.0,
+        "network": 800.0
+      }
+    },
+    {
+      "id": 3,
+      "activationCost": 150.0,
+      "failureProbability": 0.005,
+      "energyConsumption": 220.0,
+      "resourceCapacities": {
+        "cpu": 12.0,
+        "ram": 24.0,
+        "storage": 200.0,
+        "network": 1500.0
+      }
+    },
+    {
+      "id": 4,
+      "activationCost": 80.0,
+      "failureProbability": 0.05,
+      "energyConsumption": 120.0,
+      "resourceCapacities": {
+        "cpu": 4.0,
+        "ram": 8.0,
+        "storage": 60.0,
+        "network": 600.0
+      }
+    },
+    {
+      "id": 5,
+      "activationCost": 110.0,
+      "failureProbability": 0.02,
+      "energyConsumption": 160.0,
+      "resourceCapacities": {
+        "cpu": 10.0,
+        "ram": 20.0,
+        "storage": 150.0,
+        "network": 1200.0
+      }
+    },
+    {
+      "id": 6,
+      "activationCost": 95.0,
+      "failureProbability": 0.03,
+      "energyConsumption": 145.0,
+      "resourceCapacities": {
+        "cpu": 7.0,
+        "ram": 14.0,
+        "storage": 90.0,
+        "network": 900.0
+      }
+    }
+  ]
+} 
