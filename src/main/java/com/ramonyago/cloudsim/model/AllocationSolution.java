@@ -5,6 +5,11 @@ import java.util.*;
 /**
  * Representa uma solução completa de alocação de VMs em hosts,
  * incluindo cálculos de múltiplos objetivos e verificação de restrições.
+ * 
+ * Nota: As réplicas das VMs são gerenciadas naturalmente pela restrição de 
+ * confiabilidade mínima, que promove a distribuição de instâncias em hosts 
+ * diferentes para garantir alta disponibilidade, ao invés de uma restrição 
+ * de unicidade explícita.
  */
 public class AllocationSolution {
     private final Map<VM, Host> vmToHost; // x_vh: alocação de VMs
@@ -224,6 +229,8 @@ public class AllocationSolution {
         }
         
         // Verifica restrições de confiabilidade mínima
+        // Nota: As réplicas das VMs são naturalmente gerenciadas por esta restrição,
+        // que promove a distribuição em hosts diferentes para alta disponibilidade
         for (VM vm : vms) {
             double vmReliability = getVMReliability(vm);
             if (vmReliability < vm.getMinRel()) {

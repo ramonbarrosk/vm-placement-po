@@ -18,8 +18,7 @@ O sistema resolve o problema de **alocação de máquinas virtuais (VMs) em host
 #### Restrições:
 - **Capacidade dos hosts:** Limitações de CPU, RAM, armazenamento e rede
 - **Ativação de hosts:** VMs só podem ser alocadas em hosts ativos
-- **Confiabilidade mínima:** Cada VM tem um requisito mínimo de confiabilidade
-- **Unicidade:** Cada VM pode estar em no máximo um host
+- **Confiabilidade mínima:** Cada VM tem um requisito mínimo de confiabilidade que naturalmente promove a alocação de réplicas em hosts diferentes para garantir alta disponibilidade
 
 ### 1.3 Formato das Instâncias
 ```json
