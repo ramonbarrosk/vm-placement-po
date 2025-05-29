@@ -339,3 +339,25 @@ O sistema híbrido BRKGA + Tabu Search demonstrou:
 ---
 
 **Resumo Executivo:** O sistema híbrido BRKGA + Tabu Search demonstrou efetividade comprovada com melhorias de 27.7% no custo médio, convergência rápida (< 400ms) e soluções Pareto-ótimas consistentes, validadas por simulação CloudSim que confirma a viabilidade prática das soluções otimizadas. O sistema está pronto para uso em cenários reais de alocação de VMs, oferecendo um conjunto diversificado de soluções que permitem aos tomadores de decisão escolher o melhor trade-off entre custo e confiabilidade conforme suas necessidades específicas. 
+
+📊 DISTRIBUIÇÃO FINAL:
+Host 3 (Custo: 150.0, Confiabilidade: 0.995):
+├── VM 1, VM 2, VM 3, VM 5
+
+Host 5 (Custo: 110.0, Confiabilidade: 0.98):
+├── VM 4, VM 6, VM 7, VM 8
+
+Total: 2 hosts ativos, 8 VMs alocadas
+Custo Total: 260.0
+Confiabilidade Média: 0.991
+
+📊 DISTRIBUIÇÃO ALTERNATIVA:
+Host 3 (Custo: 150.0, Confiabilidade: 0.995):
+├── VM 1, VM 2, VM 3, VM 5
+
+Host 5 (Custo: 110.0, Confiabilidade: 0.98):
+├── VM 4, VM 6, VM 7, VM 8
+
+Total: 2 hosts ativos, 8 VMs alocadas
+Custo Total: 260.0
+Confiabilidade Média: 0.991 
