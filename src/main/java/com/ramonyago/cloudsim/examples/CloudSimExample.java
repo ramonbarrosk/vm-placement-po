@@ -188,48 +188,60 @@ public class CloudSimExample {
         // Criar VMs com diferentes características
         VM vm1 = new VM(1, 0.99, 2.0); // Alta confiabilidade, alta prioridade
         vm1.setDemand(ResourceType.CPU, 4.0);
-        vm1.setDemand(ResourceType.RAM, 8.0);
+        vm1.setDemand(ResourceType.RAM, 4.0); // 4 GB RAM
         vm1.setDemand(ResourceType.STORAGE, 50.0);
         
         VM vm2 = new VM(2, 0.95, 1.5); // Confiabilidade média
         vm2.setDemand(ResourceType.CPU, 2.0);
-        vm2.setDemand(ResourceType.RAM, 4.0);
+        vm2.setDemand(ResourceType.RAM, 2.0); // 2 GB RAM
         vm2.setDemand(ResourceType.STORAGE, 25.0);
         
         VM vm3 = new VM(3, 0.90, 1.0); // Baixa confiabilidade
         vm3.setDemand(ResourceType.CPU, 1.0);
-        vm3.setDemand(ResourceType.RAM, 2.0);
+        vm3.setDemand(ResourceType.RAM, 1.0); // 1 GB RAM
         vm3.setDemand(ResourceType.STORAGE, 15.0);
         
         VM vm4 = new VM(4, 0.98, 1.8); // Alta confiabilidade
         vm4.setDemand(ResourceType.CPU, 3.0);
-        vm4.setDemand(ResourceType.RAM, 6.0);
+        vm4.setDemand(ResourceType.RAM, 3.0); // 3 GB RAM
         vm4.setDemand(ResourceType.STORAGE, 40.0);
+        
+        VM vm5 = new VM(5, 0.96, 1.2); // New VM with balanced resources
+        vm5.setDemand(ResourceType.CPU, 2.5);
+        vm5.setDemand(ResourceType.RAM, 2.5); // 2.5 GB RAM
+        vm5.setDemand(ResourceType.STORAGE, 30.0);
         
         instance.addVM(vm1);
         instance.addVM(vm2);
         instance.addVM(vm3);
         instance.addVM(vm4);
+        instance.addVM(vm5);
         
-        // Criar hosts com diferentes características
+        // Criar hosts com diferentes características - increased capacity
         Host host1 = new Host(1, 150.0, 0.01, 200.0); // Caro, confiável
-        host1.setCap(ResourceType.CPU, 8.0);
-        host1.setCap(ResourceType.RAM, 16.0);
-        host1.setCap(ResourceType.STORAGE, 100.0);
+        host1.setCap(ResourceType.CPU, 12.0); // Increased from 8.0
+        host1.setCap(ResourceType.RAM, 20.0); // Increased from 16.0
+        host1.setCap(ResourceType.STORAGE, 150.0); // Increased from 100.0
         
         Host host2 = new Host(2, 100.0, 0.03, 150.0); // Médio
-        host2.setCap(ResourceType.CPU, 6.0);
-        host2.setCap(ResourceType.RAM, 12.0);
-        host2.setCap(ResourceType.STORAGE, 80.0);
+        host2.setCap(ResourceType.CPU, 8.0); // Increased from 6.0
+        host2.setCap(ResourceType.RAM, 15.0); // Increased from 12.0
+        host2.setCap(ResourceType.STORAGE, 120.0); // Increased from 80.0
         
         Host host3 = new Host(3, 80.0, 0.05, 120.0); // Barato, menos confiável
-        host3.setCap(ResourceType.CPU, 4.0);
-        host3.setCap(ResourceType.RAM, 8.0);
-        host3.setCap(ResourceType.STORAGE, 60.0);
+        host3.setCap(ResourceType.CPU, 6.0); // Increased from 4.0
+        host3.setCap(ResourceType.RAM, 10.0); // Increased from 8.0
+        host3.setCap(ResourceType.STORAGE, 90.0); // Increased from 60.0
+        
+        Host host4 = new Host(4, 120.0, 0.02, 180.0); // New host for better distribution
+        host4.setCap(ResourceType.CPU, 10.0);
+        host4.setCap(ResourceType.RAM, 16.0);
+        host4.setCap(ResourceType.STORAGE, 100.0);
         
         instance.addHost(host1);
         instance.addHost(host2);
         instance.addHost(host3);
+        instance.addHost(host4);
         
         return instance;
     }

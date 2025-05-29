@@ -26,6 +26,7 @@ com\ramonyago\cloudsim\model\ResourceType.class
 com\ramonyago\cloudsim\model\AllocationSolution.class
 com\ramonyago\cloudsim\simulation\SimulationIntegrator.class
 TestRunner.class
+com\ramonyago\cloudsim\examples\RealTimeAllocationExample.class
 com\ramonyago\cloudsim\algorithm\brkga\BRKGADecoder$DecodingStrategy.class
 com\ramonyago\cloudsim\ExecutionReport$Builder.class
 com\ramonyago\cloudsim\model\Host.class
@@ -36,8 +37,10 @@ com\ramonyago\cloudsim\App.class
 com\ramonyago\cloudsim\util\ParetoArchive.class
 com\ramonyago\cloudsim\algorithm\brkga\BRKGAParameters$Builder.class
 com\ramonyago\cloudsim\model\ProblemInstance$InstanceStatistics.class
+com\ramonyago\cloudsim\simulation\CloudSimRealTimeAllocator.class
 com\ramonyago\cloudsim\util\ParetoArchive$ArchiveStatistics.class
 com\ramonyago\cloudsim\algorithm\brkga\BRKGADecoder.class
 com\ramonyago\cloudsim\algorithm\brkga\BRKGADecoder$1.class
 com\ramonyago\cloudsim\simulation\CloudSimSimulator$VmStatistics.class
+com\ramonyago\cloudsim\simulation\CloudSimRealTimeAllocator$AllocationStatistics.class
 com\ramonyago\cloudsim\model\ProblemInstance.class
