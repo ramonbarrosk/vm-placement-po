@@ -1,6 +1,18 @@
-# Sistema Híbrido BRKGA + Tabu Search para Alocação de VMs
+# Alocação de VMs com BRKGA e Tabu Search usando CloudSim Plus
 
-Sistema de otimização multiobjetivo para alocação de máquinas virtuais em hosts físicos, combinando algoritmo genético (BRKGA) e busca tabu para minimizar custos e maximizar confiabilidade.
+## Autores
+
+- Ramon Barros  
+- Afrânio Yago
+
+## Sobre
+
+Este repositório foi desenvolvido como parte da disciplina de **Pesquisa Operacional** no Instituto de Computação da **UFAL**.
+
+O objetivo do projeto é a implementação de técnicas de **BRKGA (Biased Random-Key Genetic Algorithm)** e **Tabu Search** para resolver problemas de alocação de máquinas virtuais (VMs) em hosts físicos. A meta principal é **maximizar a confiabilidade do sistema** durante essa alocação.
+
+Para simular o ambiente de computação em nuvem e validar as soluções propostas, utilizamos o **CloudSim Plus**, uma ferramenta de simulação amplamente usada para modelagem e experimentação em ambientes de nuvem.
+
 
 ## 🚀 Como Rodar
 
