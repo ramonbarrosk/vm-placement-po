@@ -1,4 +1,4 @@
-# Alocação de VMs com BRKGA e Tabu Search usando CloudSim Plus
+# Alocação de VMs com BRKGA, Tabu Search
 
 ## Autores
 
@@ -9,9 +9,10 @@
 
 Este repositório foi desenvolvido como parte da disciplina de **Pesquisa Operacional** no Instituto de Computação da **UFAL**.
 
-O objetivo do projeto é a implementação de técnicas de **BRKGA (Biased Random-Key Genetic Algorithm)** e **Tabu Search** para resolver problemas de alocação de máquinas virtuais (VMs) em hosts físicos. A meta principal é **maximizar a confiabilidade do sistema** durante essa alocação.
+O objetivo do projeto é a implementação de técnicas híbridas para resolver problemas de **alocação de máquinas virtuais (VMs) em hosts físicos** com múltiplos objetivos. O sistema utiliza uma abordagem híbrida composta por:
 
-Para simular o ambiente de computação em nuvem e validar as soluções propostas, utilizamos o **CloudSim Plus**, uma ferramenta de simulação amplamente usada para modelagem e experimentação em ambientes de nuvem.
+- **BRKGA (Biased Random-Key Genetic Algorithm)** multiobjetivo
+- **Busca Tabu** multiobjetivo (planejado)
 
 
 ## 🚀 Como Rodar
