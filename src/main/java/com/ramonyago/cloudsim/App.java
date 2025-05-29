@@ -7,6 +7,8 @@ import com.ramonyago.cloudsim.model.ProblemInstance;
 import com.ramonyago.cloudsim.model.VM;
 import com.ramonyago.cloudsim.model.Host;
 import com.ramonyago.cloudsim.model.ResourceType;
+import com.ramonyago.cloudsim.simulation.SimulationIntegrator;
+import com.ramonyago.cloudsim.simulation.CloudSimSimulator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,25 +18,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// Main app - quick demo of VM allocation system
+// Main app - quick demo of VM allocation system with CloudSim integration
 public class App {
     private static final Logger log = LoggerFactory.getLogger(App.class);
     
     public static void main(String[] args) {
-        log.info("=== VM Allocation Optimization System ===");
+        log.info("=== VM Allocation Optimization System with CloudSim ===");
         log.info("Starting demo...");
         
         try {
             // quick example with sample data
             runQuickDemo();
             
+            // CloudSim integration demo
+            runCloudSimDemo();
+            
             // file input if provided
             if (args.length > 0) {
                 runFromFile(args[0]);
             }
             
+            // Test with real instance files
+            testRealInstances();
+            
             // compare different strategies
             compareStrats();
+            
+            // integrated optimization and simulation
+            runIntegratedDemo();
             
         } catch (Exception e) {
             log.error("Error during execution", e);
@@ -62,6 +73,102 @@ public class App {
         
         // show results
         showResults(result);
+    }
+    
+    // CloudSim integration demo
+    private static void runCloudSimDemo() {
+        log.info("\n" + "=".repeat(60));
+        log.info("CLOUDSIM INTEGRATION DEMO");
+        log.info("=".repeat(60));
+        
+        try {
+            // Create sample instance
+            ProblemInstance instance = InstanceReader.createSampleInstance();
+            
+            // Run optimization first
+            OptimizationParameters optParams = OptimizationParameters.createQuick();
+            VMAllocationOptimizer optimizer = new VMAllocationOptimizer(instance, optParams);
+            VMAllocationOptimizer.OptimizationResult optResult = optimizer.optimize();
+            
+            // Get best solution for simulation
+            AllocationSolution bestSolution = optResult.getBestCostSolution();
+            if (bestSolution != null) {
+                log.info("Running CloudSim simulation for best cost solution...");
+                
+                // Configure simulation parameters
+                CloudSimSimulator.SimulationParameters simParams = 
+                    CloudSimSimulator.SimulationParameters.createDefault();
+                simParams.setCloudletsPerVm(3); // Quick demo
+                simParams.setCloudletLength(5000);
+                
+                // Run simulation
+                CloudSimSimulator simulator = new CloudSimSimulator(instance, simParams);
+                CloudSimSimulator.SimulationResults simResults = simulator.runSimulation(bestSolution);
+                
+                // Show simulation results
+                log.info("\nCLOUDSIM SIMULATION RESULTS:");
+                log.info("-".repeat(40));
+                System.out.println(simResults.generateReport());
+                
+                // Compare optimization vs simulation costs
+                log.info("COST COMPARISON:");
+                log.info("  Optimization Cost: {}", String.format("%.2f", bestSolution.getTotalCost()));
+                log.info("  Simulation Cost: ${}", String.format("%.2f", simResults.totalCost));
+                log.info("  Energy Consumption: {} kWh", String.format("%.2f", simResults.totalEnergyConsumption));
+                
+            } else {
+                log.warn("No feasible solution found for simulation");
+            }
+            
+        } catch (Exception e) {
+            log.error("CloudSim demo failed", e);
+        }
+    }
+    
+    // integrated optimization and simulation demo
+    private static void runIntegratedDemo() {
+        log.info("\n" + "=".repeat(60));
+        log.info("INTEGRATED OPTIMIZATION & SIMULATION DEMO");
+        log.info("=".repeat(60));
+        
+        try {
+            // Create sample instance
+            ProblemInstance instance = InstanceReader.createSampleInstance();
+            
+            // Create integrator for quick execution
+            SimulationIntegrator integrator = SimulationIntegrator.createQuick(instance);
+            
+            // Run integrated optimization and simulation
+            SimulationIntegrator.IntegratedResults results = integrator.runOptimizationAndSimulation();
+            
+            // Show complete results
+            log.info("\nINTEGRATED RESULTS:");
+            log.info("-".repeat(40));
+            System.out.println(results.generateCompleteReport());
+            
+            // Show cost differences
+            Map<AllocationSolution, SimulationIntegrator.CostDifference> costDiffs = results.getCostDifferences();
+            if (!costDiffs.isEmpty()) {
+                log.info("\nCOST DIFFERENCES (Optimization vs Simulation):");
+                log.info("-".repeat(50));
+                int i = 1;
+                for (Map.Entry<AllocationSolution, SimulationIntegrator.CostDifference> entry : costDiffs.entrySet()) {
+                    log.info("Solution {}: {}", i++, entry.getValue());
+                }
+            }
+            
+            // Find best simulated solution
+            AllocationSolution bestSimulated = results.getBestSimulatedSolution();
+            if (bestSimulated != null) {
+                log.info("\nBEST SOLUTION BY SIMULATION:");
+                log.info("  Cost: {}", String.format("%.2f", bestSimulated.getTotalCost()));
+                log.info("  Reliability: {}", String.format("%.3f", bestSimulated.getTotalReliability()));
+                log.info("  Active Hosts: {}", bestSimulated.getActiveHosts().size());
+            }
+            
+        } catch (Exception e) {
+            log.error("Integrated demo failed", e);
+        }
     }
     
     // run with input file
@@ -231,6 +338,61 @@ public class App {
                         String.format("%.1f", totalUsage),
                         String.format("%.1f", h.getCap(type)),
                         utilization * 100);
+            }
+        }
+    }
+    
+    // Test with real instance files from examples folder
+    private static void testRealInstances() {
+        log.info("\n" + "=".repeat(60));
+        log.info("REAL INSTANCE FILES TEST");
+        log.info("=".repeat(60));
+        
+        String[] instanceFiles = {
+            "examples/small_instance.json",
+            "examples/sample_instance.json", 
+            "examples/large_instance.json"
+        };
+        
+        InstanceReader reader = new InstanceReader();
+        
+        for (String filePath : instanceFiles) {
+            try {
+                log.info("\nTesting instance: {}", filePath);
+                
+                // Load instance
+                ProblemInstance instance = reader.readFromFile(filePath);
+                log.info("Loaded: {} VMs, {} hosts", instance.getVMCount(), instance.getHostCount());
+                
+                // Quick optimization
+                OptimizationParameters params = OptimizationParameters.createQuick();
+                VMAllocationOptimizer optimizer = new VMAllocationOptimizer(instance, params);
+                VMAllocationOptimizer.OptimizationResult result = optimizer.optimize();
+                
+                log.info("Optimization completed - Archive size: {}", result.getArchive().size());
+                
+                // Quick simulation
+                AllocationSolution bestSolution = result.getBestCostSolution();
+                if (bestSolution != null) {
+                    CloudSimSimulator.SimulationParameters simParams = 
+                        CloudSimSimulator.SimulationParameters.createDefault();
+                    simParams.setCloudletsPerVm(3);
+                    simParams.setCloudletLength(5000);
+                    
+                    CloudSimSimulator simulator = new CloudSimSimulator(instance, simParams);
+                    CloudSimSimulator.SimulationResults simResults = simulator.runSimulation(bestSolution);
+                    
+                    log.info("Simulation completed:");
+                    log.info("  Optimization cost: {}", String.format("%.2f", bestSolution.getTotalCost()));
+                    log.info("  Simulation cost: ${}", String.format("%.2f", simResults.totalCost));
+                    log.info("  Energy: {} kWh", String.format("%.2f", simResults.totalEnergyConsumption));
+                    log.info("  Active hosts: {}", bestSolution.getActiveHosts().size());
+                }
+                
+            } catch (IOException e) {
+                log.error("Failed to load instance: {}", filePath, e);
+            } catch (Exception e) {
+                log.error("Error testing instance: {}", filePath, e);
             }
         }
     }

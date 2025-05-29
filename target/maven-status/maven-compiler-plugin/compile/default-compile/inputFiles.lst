@@ -7,6 +7,7 @@ C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\algorithm\brkga
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\algorithm\TabuSearch.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\io\InstanceReader.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\util\ParetoArchive.java
+C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\simulation\SimulationIntegrator.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\App.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\VMAllocationOptimizer.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\OptimizationParameters.java
@@ -14,4 +15,7 @@ C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\algorithm\brkga
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\algorithm\brkga\BRKGAParameters.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\algorithm\brkga\Individual.java
 C:\projects\vm-placement-po\src\main\java\TestRunner.java
+C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\examples\RealInstanceCloudSimTest.java
 C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\model\Host.java
+C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\simulation\CloudSimSimulator.java
+C:\projects\vm-placement-po\src\main\java\com\ramonyago\cloudsim\examples\CloudSimExample.java
